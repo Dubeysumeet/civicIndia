@@ -42,6 +42,12 @@ export default function AIAssistant() {
   const handleSend = async () => {
     if (!input.trim() || isLoading) return;
 
+    // Security: Limit input length to prevent token abuse
+    if (input.length > 500) {
+      setMessages(prev => [...prev, { role: 'model', text: "Your message is a bit too long. Please keep it under 500 characters." }]);
+      return;
+    }
+
     const userMessage = input.trim();
     setInput('');
     setMessages(prev => [...prev, { role: 'user', text: userMessage }]);
@@ -49,49 +55,26 @@ export default function AIAssistant() {
 
     try {
       if (!API_KEY || API_KEY === 'undefined') {
-        throw new Error("VITE_GEMINI_API_KEY is not defined. Please restart your 'npm run dev' command to load the .env file.");
+        throw new Error("API Key missing. Please check your environment configuration.");
       }
 
-      // Using gemini-2.5-flash as requested
-      let model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+      // Using gemini-1.5-flash for optimal speed and efficiency
+      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
       
-      // Contextual prompt to keep it focused on Indian Elections
-      const prompt = `You are a helpful and professional AI assistant for "CivicLearn India", a premium educational platform about Indian elections. 
-      Keep your answers concise, accurate, and educational. Use a professional yet friendly tone. 
-      Focus ONLY on Indian elections, the constitution, voting process, and civic duties.
-      
-      User says: ${userMessage}`;
+      const prompt = `You are a helpful and professional AI assistant for "CivicLearn India".
+      Focus ONLY on Indian elections, constitution, and civic duties. 
+      Tone: Professional, friendly, educational.
+      User question: ${userMessage}`;
 
-      let result;
-      try {
-        result = await model.generateContent(prompt);
-      } catch (firstError: any) {
-        // Fallback if 2.5-flash fails
-        if (firstError.message?.includes("404") || firstError.message?.includes("not found")) {
-          console.warn("Gemini 2.5 Flash 404, trying gemini-pro fallback...");
-          const fallbackModel = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-          result = await fallbackModel.generateContent(prompt);
-        } else {
-          throw firstError;
-        }
-      }
-
+      const result = await model.generateContent(prompt);
       const response = await result.response;
       const text = response.text();
 
       setMessages(prev => [...prev, { role: 'model', text }]);
     } catch (error: any) {
       console.error("Gemini Error:", error);
-      let errorMessage = "I apologize, I'm having a bit of trouble connecting. Please try again in a moment.";
-      
-      if (error.message?.includes("VITE_GEMINI_API_KEY")) {
-        errorMessage = error.message;
-      } else if (error.message?.includes("API_KEY_INVALID")) {
-        errorMessage = "The API key provided seems to be invalid. Please check your configuration in AI Studio.";
-      } else if (error.message?.includes("404")) {
-        errorMessage = "Model not found (404). Your API key might not have access to this specific model yet. Please check your AI Studio settings.";
-      }
-      
+      let errorMessage = "I'm having trouble connecting to the brain. Please try again.";
+      if (error.message?.includes("API_KEY_INVALID")) errorMessage = "Invalid API Key.";
       setMessages(prev => [...prev, { role: 'model', text: errorMessage }]);
     } finally {
       setIsLoading(false);
@@ -99,10 +82,12 @@ export default function AIAssistant() {
   };
 
   return (
-    <div className="fixed bottom-6 right-6 z-[100] font-body-md">
+    <div className="fixed bottom-6 right-6 z-[100] font-body-md" role="region" aria-label="AI Assistant">
       <AnimatePresence>
         {isOpen && (
           <motion.div
+            role="dialog"
+            aria-label="Civic Assistant Chat"
             initial={{ opacity: 0, y: 20, scale: 0.9, transformOrigin: 'bottom right' }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.9 }}
@@ -112,7 +97,7 @@ export default function AIAssistant() {
             <div className="bg-primary p-4 text-white flex justify-between items-center sheen">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center">
-                  <span className="material-symbols-outlined text-secondary">smart_toy</span>
+                  <span className="material-symbols-outlined text-secondary" aria-hidden="true">smart_toy</span>
                 </div>
                 <div>
                   <h3 className="font-h2 text-sm">Civic Assistant</h3>
@@ -121,9 +106,10 @@ export default function AIAssistant() {
               </div>
               <button 
                 onClick={() => setIsOpen(false)}
+                aria-label="Close Assistant"
                 className="w-8 h-8 rounded-lg hover:bg-white/10 flex items-center justify-center transition-colors"
               >
-                <span className="material-symbols-outlined text-sm">close</span>
+                <span className="material-symbols-outlined text-sm" aria-hidden="true">close</span>
               </button>
             </div>
 
@@ -131,6 +117,7 @@ export default function AIAssistant() {
             <div 
               ref={scrollRef}
               className="flex-1 overflow-y-auto p-4 space-y-4 bg-dot-pattern"
+              aria-live="polite"
             >
               {messages.map((msg, i) => (
                 <motion.div
@@ -144,12 +131,13 @@ export default function AIAssistant() {
                       ? 'bg-secondary text-white rounded-tr-none' 
                       : 'bg-slate-100 text-on-surface rounded-tl-none border border-slate-200'
                   }`}>
+                    <span className="sr-only">{msg.role === 'user' ? 'You:' : 'Assistant:'}</span>
                     {msg.text}
                   </div>
                 </motion.div>
               ))}
               {isLoading && (
-                <div className="flex justify-start">
+                <div className="flex justify-start" aria-label="Assistant is typing">
                   <div className="bg-slate-100 p-3 rounded-2xl rounded-tl-none border border-slate-200 flex gap-1">
                     <span className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce"></span>
                     <span className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce delay-75"></span>
@@ -168,14 +156,16 @@ export default function AIAssistant() {
                   onChange={(e) => setInput(e.target.value)}
                   onKeyPress={(e) => e.key === 'Enter' && handleSend()}
                   placeholder="Ask about elections..."
+                  aria-label="Ask about elections"
                   className="w-full bg-slate-100 border-none rounded-xl py-3 pl-4 pr-12 text-sm focus:ring-2 focus:ring-primary/20 transition-all"
                 />
                 <button
                   onClick={handleSend}
                   disabled={isLoading}
+                  aria-label="Send message"
                   className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-primary text-white rounded-lg flex items-center justify-center hover:bg-primary-container transition-colors disabled:opacity-50"
                 >
-                  <span className="material-symbols-outlined text-sm">send</span>
+                  <span className="material-symbols-outlined text-sm" aria-hidden="true">send</span>
                 </button>
               </div>
             </div>
@@ -188,11 +178,13 @@ export default function AIAssistant() {
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         onClick={() => setIsOpen(!isOpen)}
+        aria-label={isOpen ? "Close Assistant" : "Open AI Civic Assistant"}
+        aria-expanded={isOpen}
         className={`w-14 h-14 rounded-2xl flex items-center justify-center shadow-xl transition-all duration-300 ${
           isOpen ? 'bg-white text-primary rotate-90' : 'bg-primary text-white shadow-primary/20'
         } sheen`}
       >
-        <span className="material-symbols-outlined text-3xl">
+        <span className="material-symbols-outlined text-3xl" aria-hidden="true">
           {isOpen ? 'close' : 'smart_toy'}
         </span>
         {!isOpen && (

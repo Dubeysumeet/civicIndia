@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
+import { calculatePercentage, getPassStatus, getResultMessage } from '../utils/quizUtils';
 
 type Level = 'beginner' | 'intermediate' | 'advanced';
 type QuizState = 'selection' | 'quiz' | 'result' | 'name-input';
@@ -149,21 +150,14 @@ export default function Quiz() {
   const getCurrentLevel = () => levels.find(l => l.id === selectedLevel);
   const getPercentage = () => {
     const questions = questionBank[selectedLevel!];
-    return Math.round((score / questions.length) * 100);
+    return calculatePercentage(score, questions.length);
   };
   const isPassed = () => {
     const level = getCurrentLevel();
-    return getPercentage() >= (level?.passScore || 0);
+    return getPassStatus(getPercentage(), level?.passScore || 0);
   };
 
-  const getResultMessage = () => {
-    const percentage = getPercentage();
-    if (percentage >= 90) return { title: 'Outstanding!', message: "You're a true Civic Champion!", icon: 'star' };
-    if (percentage >= 80) return { title: 'Excellent!', message: "Impressive knowledge! You're well-prepared to vote.", icon: 'thumb_up' };
-    if (percentage >= 70) return { title: 'Great Job!', message: 'Good understanding! Review a few topics to strengthen your knowledge.', icon: 'sentiment_satisfied' };
-    if (percentage >= 60) return { title: 'You Passed!', message: 'You made it! Consider revisiting some sections.', icon: 'check_circle' };
-    return { title: 'Keep Learning!', message: "Don't give up! Review the material and try again.", icon: 'refresh' };
-  };
+  const currentResultMessage = () => getResultMessage(getPercentage());
   const downloadCertificate = () => {
     if (!certificateRef.current) return;
     
@@ -455,13 +449,13 @@ export default function Quiz() {
           <div className={`rounded-3xl p-12 mb-8 noise-overlay sheen ${isPassed() ? 'bg-gradient-to-br from-[#060F2A] via-primary to-primary-container text-white shadow-xl' : 'card bg-slate-100 text-on-surface'}`}>
             <div className={`w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6 ${isPassed() ? 'bg-white/20' : 'bg-slate-200'}`}>
               <span className={`material-symbols-outlined text-5xl ${isPassed() ? 'text-white' : 'text-slate-500'}`}>
-                {getResultMessage().icon}
+                {currentResultMessage().icon}
               </span>
             </div>
 
-            <h1 className="font-h1 text-4xl mb-2">{getResultMessage().title}</h1>
+            <h1 className="font-h1 text-4xl mb-2">{currentResultMessage().title}</h1>
             <p className={`text-lg mb-8 ${isPassed() ? 'text-white/80' : 'text-on-surface-variant'}`}>
-              {getResultMessage().message}
+              {currentResultMessage().message}
             </p>
 
             <div className="flex justify-center gap-8 mb-8">
