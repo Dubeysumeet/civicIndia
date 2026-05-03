@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>CivicLearn India - Empowering the Indian Voter</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800;900&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-error-container": "#93000a",
+                        "on-primary-container": "#90a8ff",
+                        "error-container": "#ffdad6",
+                        "on-background": "#191c1d",
+                        "secondary-fixed-dim": "#ffb690",
+                        "on-primary-fixed-variant": "#264191",
+                        "secondary-container": "#fd761a",
+                        "tertiary-fixed": "#ffdbcb",
+                        "on-surface": "#191c1d",
+                        "primary-fixed-dim": "#b6c4ff",
+                        "background": "#f8f9fa",
+                        "surface": "#f8f9fa",
+                        "surface-container": "#edeeef",
+                        "surface-container-lowest": "#ffffff",
+                        "primary-container": "#1e3a8a",
+                        "inverse-primary": "#b6c4ff",
+                        "on-tertiary-fixed-variant": "#773205",
+                        "inverse-on-surface": "#f0f1f2",
+                        "on-error": "#ffffff",
+                        "primary-fixed": "#dce1ff",
+                        "secondary": "#9d4300",
+                        "inverse-surface": "#2e3132",
+                        "surface-container-low": "#f3f4f5",
+                        "secondary-fixed": "#ffdbca",
+                        "on-tertiary-fixed": "#341100",
+                        "on-surface-variant": "#444651",
+                        "primary": "#00236f",
+                        "surface-bright": "#f8f9fa",
+                        "outline-variant": "#c5c5d3",
+                        "on-secondary": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "on-primary-fixed": "#00164e",
+                        "on-secondary-container": "#5c2400",
+                        "surface-container-high": "#e7e8e9",
+                        "surface-tint": "#4059aa",
+                        "surface-dim": "#d9dadb",
+                        "tertiary-container": "#6e2c00",
+                        "outline": "#757682",
+                        "surface-container-highest": "#e1e3e4",
+                        "surface-variant": "#e1e3e4",
+                        "on-secondary-fixed": "#341100",
+                        "on-primary": "#ffffff",
+                        "error": "#ba1a1a",
+                        "on-secondary-fixed-variant": "#783200",
+                        "tertiary": "#4b1c00",
+                        "on-tertiary-container": "#f39461",
+                        "tertiary-fixed-dim": "#ffb691"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "2xl": "1.25rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "md": "16px",
+                        "sm": "8px",
+                        "xs": "4px",
+                        "xl": "48px",
+                        "lg": "24px",
+                        "unit": "4px",
+                        "gutter": "24px",
+                        "container-max": "1200px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Inter"],
+                        "button": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "h3": ["Lexend"],
+                        "h2": ["Lexend"],
+                        "label-caps": ["Inter"],
+                        "h1": ["Lexend"]
+                    },
+                    "fontSize": {
+                        "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "button": ["16px", {"lineHeight": "1", "fontWeight": "600"}],
+                        "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "h3": ["24px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                        "h2": ["32px", {"lineHeight": "1.3", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "label-caps": ["12px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                        "h1": ["40px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .active-glow {
+            box-shadow: 0 0 20px rgba(30, 58, 138, 0.25);
+        }
+        .path-line {
+            background-image: linear-gradient(to bottom, #dce1ff 50%, transparent 50%);
+            background-size: 2px 20px;
+        }
+    </style>
+</head>
+<body class="bg-background font-body-md text-on-background antialiased">
+<!-- TopNavBar -->
+<header class="sticky top-0 w-full z-50 border-b bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-slate-100 dark:border-slate-800 shadow-sm">
+<div class="flex justify-between items-center px-6 py-4 max-w-7xl mx-auto">
+<div class="text-xl font-black text-[#1E3A8A] dark:text-white tracking-tighter font-h2">CivicLearn India</div>
+<nav class="hidden md:flex items-center gap-8">
+<a class="font-['Lexend'] font-medium antialiased text-[#1E3A8A] dark:text-blue-400 border-b-2 border-[#1E3A8A] pb-1 transition-all duration-200" href="#">Home</a>
+<a class="font-['Lexend'] font-medium antialiased text-slate-500 dark:text-slate-400 hover:text-[#1E3A8A] dark:hover:text-blue-300 transition-all duration-200" href="#">Basics</a>
+<a class="font-['Lexend'] font-medium antialiased text-slate-500 dark:text-slate-400 hover:text-[#1E3A8A] dark:hover:text-blue-300 transition-all duration-200" href="#">Process</a>
+<a class="font-['Lexend'] font-medium antialiased text-slate-500 dark:text-slate-400 hover:text-[#1E3A8A] dark:hover:text-blue-300 transition-all duration-200" href="#">Rights</a>
+<a class="font-['Lexend'] font-medium antialiased text-slate-500 dark:text-slate-400 hover:text-[#1E3A8A] dark:hover:text-blue-300 transition-all duration-200" href="#">History</a>
+<a class="font-['Lexend'] font-medium antialiased text-slate-500 dark:text-slate-400 hover:text-[#1E3A8A] dark:hover:text-blue-300 transition-all duration-200" href="#">Elections</a>
+</nav>
+<button class="bg-secondary text-on-secondary px-6 py-2.5 rounded-full font-button active:scale-95 transition-transform duration-100 shadow-[0_4px_0_0_#5c2400]">
+                Start Learning
+            </button>
+</div>
+</header>
+<main>
+<!-- Hero Section -->
+<section class="relative overflow-hidden pt-20 pb-32 px-6">
+<div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
+<div class="space-y-8">
+<div class="inline-flex items-center gap-2 bg-primary-fixed text-on-primary-fixed px-4 py-2 rounded-full text-label-caps uppercase">
+<span class="w-2 h-2 bg-secondary rounded-full animate-pulse"></span>
+                        Election 2024 Readiness
+                    </div>
+<h1 class="font-h1 text-[56px] leading-[1.1] text-primary">Understand Elections in India 🇮🇳</h1>
+<p class="font-body-lg text-on-surface-variant max-w-lg">
+                        Your comprehensive, gamified guide to navigating the world's largest democracy. Learn how laws are made and how your vote shapes the future.
+                    </p>
+<div class="flex flex-wrap gap-4 pt-4">
+<button class="bg-secondary text-on-secondary px-8 py-4 rounded-xl font-button text-lg shadow-[0_5px_0_0_#5c2400] active:translate-y-[2px] active:shadow-[0_3px_0_0_#5c2400] transition-all">
+                            Start Learning
+                        </button>
+<button class="bg-white border-2 border-primary text-primary px-8 py-4 rounded-xl font-button text-lg hover:bg-primary/5 transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined">play_circle</span>
+                            Watch How it Works
+                        </button>
+</div>
+</div>
+<div class="relative">
+<div class="absolute -inset-4 bg-primary/5 rounded-[40px] blur-3xl -z-10"></div>
+<img alt="Digital Democracy Illustration" class="w-full h-auto rounded-3xl shadow-2xl transform lg:rotate-3 hover:rotate-0 transition-transform duration-500 border-8 border-white" data-alt="A sophisticated 3D isometric illustration of a modern digital voting station in India. The scene is bathed in clean, bright light with a soft blue and white background. Minimalist graphic elements like floating checkmarks and democratic icons are integrated into the design. The aesthetic is premium corporate-minimalist with a soft saffron glow highlighting the interaction point." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCuNqcazfLgLIohb9__Iy6bpzS0hdSOHFS4VthNh1n8XT--PkFq9vz_COqPLLyw_BHLKspyTX56CSzWkGf8nUlc5gNYs4SkqMh2SyxvrW2kFdTCDHDbGwldn6_8kEQdwC5vsXL6pSVI6FYhaR9NBOcmQB-M_AUo_23WWpZ7mYpiHEyOEnbGriTvgq6R49LDB1UZ8TRSWvSddBDgJ2Zg86IO6eX1lQMbL11TPxA7iDhntLz8ektWfekb9qPo8sNHlXOlfdWZZ80U2Ov8"/>
+</div>
+</div>
+</section>
+<!-- Interactive Learning Path (Duolingo Style) -->
+<section class="bg-surface-container-low py-24 px-6">
+<div class="max-w-3xl mx-auto text-center mb-16">
+<h2 class="font-h2 text-primary mb-4">Your Learning Journey</h2>
+<p class="text-on-surface-variant">Master the civic landscape one step at a time.</p>
+</div>
+<div class="max-w-lg mx-auto relative flex flex-col items-center gap-12">
+<!-- Step 1: Basics (Completed) -->
+<div class="relative z-10 w-full flex justify-start pl-12">
+<div class="bg-white p-6 rounded-2xl shadow-lg border-2 border-emerald-500 w-64 transform -rotate-2 hover:rotate-0 transition-all flex flex-col items-center gap-3">
+<div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-3xl">menu_book</span>
+</div>
+<span class="font-h3 text-xl">Basics</span>
+<div class="bg-emerald-500 text-white p-1 rounded-full flex items-center">
+<span class="material-symbols-outlined text-sm" data-weight="fill">check</span>
+</div>
+</div>
+</div>
+<!-- Path Line -->
+<div class="absolute w-1 h-full bg-slate-200 left-1/2 -translate-x-1/2 top-0 -z-0"></div>
+<!-- Step 2: Types (Active) -->
+<div class="relative z-10 w-full flex justify-end pr-12">
+<div class="bg-white p-6 rounded-2xl shadow-xl border-4 border-primary active-glow w-64 transform rotate-2 hover:rotate-0 transition-all flex flex-col items-center gap-3">
+<div class="w-16 h-16 bg-primary-container text-white rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-3xl">account_balance</span>
+</div>
+<span class="font-h3 text-xl text-primary">Types</span>
+<div class="bg-primary px-3 py-1 rounded-full text-white text-[10px] font-bold uppercase tracking-widest animate-pulse">Current</div>
+</div>
+</div>
+<!-- Step 3: Process (Locked) -->
+<div class="relative z-10 w-full flex justify-center">
+<div class="bg-slate-100 p-6 rounded-2xl border-2 border-dashed border-slate-300 w-64 opacity-60 flex flex-col items-center gap-3">
+<div class="w-16 h-16 bg-slate-200 text-slate-500 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-3xl">how_to_reg</span>
+</div>
+<span class="font-h3 text-xl text-slate-500">Process</span>
+<span class="material-symbols-outlined text-slate-400">lock</span>
+</div>
+</div>
+<!-- Step 4: Rights (Locked) -->
+<div class="relative z-10 w-full flex justify-start pl-12">
+<div class="bg-slate-100 p-6 rounded-2xl border-2 border-dashed border-slate-300 w-64 opacity-60 flex flex-col items-center gap-3">
+<div class="w-16 h-16 bg-slate-200 text-slate-500 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-3xl">gavel</span>
+</div>
+<span class="font-h3 text-xl text-slate-500">Rights</span>
+<span class="material-symbols-outlined text-slate-400">lock</span>
+</div>
+</div>
+<!-- Step 5: History (Locked) -->
+<div class="relative z-10 w-full flex justify-end pr-12">
+<div class="bg-slate-100 p-6 rounded-2xl border-2 border-dashed border-slate-300 w-64 opacity-60 flex flex-col items-center gap-3">
+<div class="w-16 h-16 bg-slate-200 text-slate-500 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-3xl">history_edu</span>
+</div>
+<span class="font-h3 text-xl text-slate-500">History</span>
+<span class="material-symbols-outlined text-slate-400">lock</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Election Process Timeline -->
+<section class="py-24 px-6 max-w-7xl mx-auto overflow-hidden">
+<h2 class="font-h2 text-primary text-center mb-16">The Election Lifecycle</h2>
+<div class="relative">
+<div class="absolute top-12 left-0 w-full h-[2px] border-t-2 border-dashed border-primary-fixed -z-10"></div>
+<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
+<!-- Step 1 -->
+<div class="flex flex-col items-center text-center gap-6">
+<div class="w-12 h-12 bg-primary text-white rounded-full flex items-center justify-center shadow-lg">
+<span class="material-symbols-outlined">campaign</span>
+</div>
+<div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 flex-1 w-full">
+<p class="font-bold text-sm mb-1">Announcement</p>
+<p class="text-xs text-slate-500">ECI declares election dates</p>
+</div>
+</div>
+<!-- Step 2 -->
+<div class="flex flex-col items-center text-center gap-6">
+<div class="w-12 h-12 bg-primary text-white rounded-full flex items-center justify-center shadow-lg">
+<span class="material-symbols-outlined">description</span>
+</div>
+<div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 flex-1 w-full">
+<p class="font-bold text-sm mb-1">Nominations</p>
+<p class="text-xs text-slate-500">Candidates file papers</p>
+</div>
+</div>
+<!-- Step 3 -->
+<div class="flex flex-col items-center text-center gap-6">
+<div class="w-12 h-12 bg-primary text-white rounded-full flex items-center justify-center shadow-lg">
+<span class="material-symbols-outlined">groups</span>
+</div>
+<div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 flex-1 w-full">
+<p class="font-bold text-sm mb-1">Campaigning</p>
+<p class="text-xs text-slate-500">Rallies &amp; Manifestos</p>
+</div>
+</div>
+<!-- Step 4 -->
+<div class="flex flex-col items-center text-center gap-6">
+<div class="w-12 h-12 bg-primary text-white rounded-full flex items-center justify-center shadow-lg">
+<span class="material-symbols-outlined">how_to_vote</span>
+</div>
+<div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 flex-1 w-full border-2 border-secondary/20">
+<p class="font-bold text-sm mb-1">Polling Day</p>
+<p class="text-xs text-slate-500">Citizens cast votes</p>
+</div>
+</div>
+<!-- Step 5 -->
+<div class="flex flex-col items-center text-center gap-6">
+<div class="w-12 h-12 bg-primary text-white rounded-full flex items-center justify-center shadow-lg">
+<span class="material-symbols-outlined">equalizer</span>
+</div>
+<div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 flex-1 w-full">
+<p class="font-bold text-sm mb-1">Counting</p>
+<p class="text-xs text-slate-500">Tallying of EVM results</p>
+</div>
+</div>
+<!-- Step 6 -->
+<div class="flex flex-col items-center text-center gap-6">
+<div class="w-12 h-12 bg-primary text-white rounded-full flex items-center justify-center shadow-lg">
+<span class="material-symbols-outlined">emoji_events</span>
+</div>
+<div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 flex-1 w-full">
+<p class="font-bold text-sm mb-1">Declaration</p>
+<p class="text-xs text-slate-500">Results officially announced</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Current Elections Tabs -->
+<section class="bg-surface py-24 px-6">
+<div class="max-w-7xl mx-auto">
+<div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
+<div>
+<h2 class="font-h2 text-primary mb-2">Live Election Watch</h2>
+<p class="text-on-surface-variant">Stay updated with ongoing and upcoming polls.</p>
+</div>
+<div class="flex p-1 bg-surface-container rounded-full">
+<button class="px-6 py-2 rounded-full bg-white shadow-sm font-button text-primary">Upcoming</button>
+<button class="px-6 py-2 rounded-full font-button text-slate-500 hover:text-primary">Ongoing</button>
+<button class="px-6 py-2 rounded-full font-button text-slate-500 hover:text-primary">Results</button>
+</div>
+</div>
+<div class="grid md:grid-cols-2 gap-8">
+<!-- Card 1 -->
+<div class="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-shadow group border border-slate-100">
+<div class="h-48 relative">
+<img alt="State Assembly" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" data-alt="A cinematic, wide-angle photograph of an Indian state assembly building during the golden hour. The architecture is grand and traditional. The sky is a gradient of deep orange and soft purple. The image has a high-end, editorial feel with clean lines and a sense of political significance." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBZnC0TiLq2hyKaMrHG6h6AIglS8PEnnrnS20YgY0hRJmsXYSs2u2xvg5qWbqo4jFKHOTgC5SIofPTEW0Qj_PbJ_Er1GbSB3uk6jV4cd-cZMJce9mACqYms60bwu9pf0E6KlGozF5I0p4WCKU_P2324IcKabsOj2wePrp22LnfeG49rAYLFhTBm7h8LjqARiDqCbD3dEmfgFdgeTtJOXMXxlDJ1928RJm04flnAL2Ixtca2Ctso7jVrEDjA2crcaQlDTsVp0sJlyfcg"/>
+<div class="absolute top-4 right-4 bg-secondary text-white px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">State Assembly</div>
+</div>
+<div class="p-8">
+<div class="flex items-center gap-2 text-primary font-bold text-sm mb-2">
+<span class="material-symbols-outlined text-lg">calendar_month</span>
+                                November 2024
+                            </div>
+<h3 class="font-h3 text-2xl mb-4">Maharashtra Legislative Assembly</h3>
+<div class="flex items-center justify-between pt-4 border-t border-slate-100">
+<span class="text-slate-500 text-sm">Status: Notification Pending</span>
+<button class="text-primary font-bold flex items-center gap-1 group-hover:translate-x-2 transition-transform">
+                                    Track Details <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-shadow group border border-slate-100">
+<div class="h-48 relative">
+<img alt="State Map Data" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" data-alt="A modern, high-tech map visualization of Haryana, India, with glowing borders and clean data overlays. The visual style is minimal and information-dense, using a palette of deep blues and vibrant accents. The lighting is low-key, making the digital map pop with a sophisticated tech-led aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCAQLr92ANuXdyIX2__tMVFsjQzztawG6BrU1v-5F0LDhEtNBxUY_A55NBNONBApwpD3KGa_5DdEj292rDP7ZRazhkOAHWlyyCVF5IK_spL6QRRBrmqAVtUbUJ-1FLHBNR5Z9Z2DvRoXvUpmheH-3O2K_mAnyGk_cxzPz5ZoueeG0IsfU3xv5nAy-dy0vVXnMcEcb8jfuooOJqvJvMc3XqFfnSTP9psTR3Bb5ZVVpaQHgfdWNOCzGN3YZPKctxkdFSwndcBYVENNhhZ"/>
+<div class="absolute top-4 right-4 bg-secondary text-white px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">State Assembly</div>
+</div>
+<div class="p-8">
+<div class="flex items-center gap-2 text-primary font-bold text-sm mb-2">
+<span class="material-symbols-outlined text-lg">calendar_month</span>
+                                October 2024
+                            </div>
+<h3 class="font-h3 text-2xl mb-4">Haryana Legislative Assembly</h3>
+<div class="flex items-center justify-between pt-4 border-t border-slate-100">
+<span class="text-slate-500 text-sm">Status: Pre-poll Training</span>
+<button class="text-primary font-bold flex items-center gap-1 group-hover:translate-x-2 transition-transform">
+                                    Track Details <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Quiz Section -->
+<section class="py-24 px-6">
+<div class="max-w-4xl mx-auto bg-primary text-white rounded-3xl p-12 relative overflow-hidden shadow-2xl">
+<div class="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -mr-32 -mt-32 blur-3xl"></div>
+<div class="relative z-10">
+<div class="flex items-center gap-3 mb-8">
+<div class="bg-secondary p-2 rounded-lg">
+<span class="material-symbols-outlined">quiz</span>
+</div>
+<h2 class="font-h3 text-2xl">Quick Quiz: Test your knowledge!</h2>
+</div>
+<div class="mb-10">
+<p class="text-xl md:text-2xl font-medium mb-8">What is the minimum age to vote in India?</p>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<button class="bg-white/10 hover:bg-white/20 border-2 border-white/20 p-5 rounded-2xl text-left transition-all font-bold flex justify-between items-center group">
+<span>18 Years</span>
+<div class="w-6 h-6 border-2 border-white/40 rounded-full group-hover:border-white transition-colors"></div>
+</button>
+<button class="bg-white/10 hover:bg-white/20 border-2 border-white/20 p-5 rounded-2xl text-left transition-all font-bold flex justify-between items-center group">
+<span>21 Years</span>
+<div class="w-6 h-6 border-2 border-white/40 rounded-full group-hover:border-white transition-colors"></div>
+</button>
+<button class="bg-white/10 hover:bg-white/20 border-2 border-white/20 p-5 rounded-2xl text-left transition-all font-bold flex justify-between items-center group">
+<span>25 Years</span>
+<div class="w-6 h-6 border-2 border-white/40 rounded-full group-hover:border-white transition-colors"></div>
+</button>
+<button class="bg-white/10 hover:bg-white/20 border-2 border-white/20 p-5 rounded-2xl text-left transition-all font-bold flex justify-between items-center group">
+<span>30 Years</span>
+<div class="w-6 h-6 border-2 border-white/40 rounded-full group-hover:border-white transition-colors"></div>
+</button>
+</div>
+</div>
+<div class="flex items-center justify-between">
+<p class="text-white/60 text-sm">Question 1 of 10</p>
+<button class="bg-white text-primary px-8 py-3 rounded-xl font-bold hover:bg-slate-100 transition-colors">Next Question</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Impact Section -->
+<section class="py-32 px-6 text-center bg-white">
+<div class="max-w-4xl mx-auto">
+<h2 class="font-h1 text-[64px] leading-tight mb-6">
+                    Every <span class="text-secondary italic underline decoration-secondary/30">Vote</span> Counts.<br/>
+                    Every Voice Matters.
+                </h2>
+<div class="h-1 w-24 bg-primary mx-auto rounded-full mb-8"></div>
+<p class="font-body-lg text-slate-500 max-w-xl mx-auto">
+                    Democracy is not just a system, it's a shared responsibility. Join 5M+ Indians learning to navigate our elective process with confidence.
+                </p>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="w-full border-t bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-800">
+<div class="flex flex-col md:flex-row justify-between items-center px-8 py-12 max-w-7xl mx-auto gap-6">
+<div class="flex flex-col gap-2 items-center md:items-start">
+<div class="text-lg font-bold text-[#1E3A8A] dark:text-white font-['Lexend']">CivicLearn India</div>
+<p class="font-['Lexend'] text-sm text-slate-500 dark:text-slate-400 text-center md:text-left">© 2024 CivicLearn India. Education for a stronger democracy.</p>
+</div>
+<nav class="flex gap-8">
+<a class="font-['Lexend'] text-sm text-slate-500 dark:text-slate-400 hover:underline decoration-2 underline-offset-4 transition-opacity opacity-80 hover:opacity-100" href="#">About</a>
+<a class="font-['Lexend'] text-sm text-slate-500 dark:text-slate-400 hover:underline decoration-2 underline-offset-4 transition-opacity opacity-80 hover:opacity-100" href="#">Methodology</a>
+<a class="font-['Lexend'] text-sm text-slate-500 dark:text-slate-400 hover:underline decoration-2 underline-offset-4 transition-opacity opacity-80 hover:opacity-100" href="#">Privacy</a>
+<a class="font-['Lexend'] text-sm text-slate-500 dark:text-slate-400 hover:underline decoration-2 underline-offset-4 transition-opacity opacity-80 hover:opacity-100" href="#">Contact</a>
+</nav>
+</div>
+</footer>
+</body></html>
