@@ -1,196 +1,608 @@
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 export default function Process() {
+  const [activeStep, setActiveStep] = useState(1);
+
+  const eligibilityCriteria = [
+    { label: 'Age', value: 'Must be 18 years or above on January 1st of the year', icon: 'cake' },
+    { label: 'Citizenship', value: 'Must be Indian citizen', icon: 'flag' },
+    { label: 'Residence', value: 'Must be ordinary resident of the constituency', icon: 'home' },
+    { label: 'Not Disqualified', value: 'Should not be of unsound mind (declared by court)', icon: 'verified_user' },
+  ];
+
+  const registrationMethods = [
+    { method: 'Online', steps: 'Visit voters.eci.gov.in → Fill Form 6 → Upload documents → Submit', icon: 'computer' },
+    { method: 'Offline', steps: 'Get Form 6 from BLO/ERO office → Fill & attach documents → Submit', icon: 'description' },
+    { method: 'App', steps: 'Download Voter Helpline App → Register through app', icon: 'smartphone' },
+  ];
+
+  const requiredDocuments = [
+    'Proof of Age (Birth certificate, 10th marksheet, passport)',
+    'Proof of Address (Aadhaar, utility bills, bank statement)',
+    'Passport size photograph',
+  ];
+
+  const acceptedIDs = [
+    'Voter ID Card (EPIC)',
+    'Aadhaar Card',
+    'Passport',
+    'Driving License',
+    'PAN Card',
+    'Bank/Post Office Passbook with photo',
+    'MNREGA Job Card',
+    'Pension document with photo',
+    'Service ID of Central/State Govt',
+    'Student ID (for students)',
+    'Property document with photo',
+    'Smart Card issued by RGI',
+  ];
+
+  const evmSteps = [
+    { step: 1, instruction: 'Enter the voting compartment (private booth)' },
+    { step: 2, instruction: 'Look at the EVM - shows candidate names, symbols, and buttons' },
+    { step: 3, instruction: 'Press the button next to your chosen candidate' },
+    { step: 4, instruction: "You'll hear a beep and light will glow" },
+    { step: 5, instruction: 'VVPAT will show a paper slip for 7 seconds' },
+    { step: 6, instruction: 'Verify your vote on the slip' },
+    { step: 7, instruction: 'Exit the booth' },
+  ];
+
+  const voterRights = [
+    { right: 'Right to Vote', description: 'Cannot be denied based on religion, caste, gender', icon: 'how_to_vote' },
+    { right: 'Secret Ballot', description: 'No one can ask who you voted for', icon: 'lock' },
+    { right: 'NOTA', description: 'Right to reject all candidates', icon: 'block' },
+    { right: 'Accessible Voting', description: 'Special facilities for disabled voters', icon: 'accessible' },
+    { right: 'Paid Leave', description: 'Employers must give leave on voting day', icon: 'event_available' },
+    { right: 'Assistance', description: 'Can request help if unable to vote independently', icon: 'support' },
+  ];
+
+  const faqs = [
+    { question: 'What if my name is not in the list?', answer: 'Apply for inclusion using Form 6 before the deadline.' },
+    { question: 'Can I vote without Voter ID?', answer: 'Yes, with any of the 12 approved photo IDs listed above.' },
+    { question: 'What if EVM malfunctions?', answer: 'Inform the presiding officer immediately. The machine will be replaced.' },
+    { question: 'Can I change my vote?', answer: 'No, once the button is pressed, your vote is final.' },
+    { question: 'What if VVPAT shows wrong candidate?', answer: 'Immediately inform the officer. Your vote will be recorded on paper ballot instead.' },
+  ];
+
+  const processSteps = [
+    {
+      id: 1,
+      title: 'Check Eligibility',
+      shortTitle: 'Eligibility',
+      icon: 'checklist',
+      phase: 'before'
+    },
+    {
+      id: 2,
+      title: 'Register as Voter',
+      shortTitle: 'Register',
+      icon: 'app_registration',
+      phase: 'before'
+    },
+    {
+      id: 3,
+      title: 'Get Voter ID',
+      shortTitle: 'Voter ID',
+      icon: 'badge',
+      phase: 'before'
+    },
+    {
+      id: 4,
+      title: 'Find Polling Station',
+      shortTitle: 'Find Booth',
+      icon: 'location_on',
+      phase: 'before'
+    },
+    {
+      id: 5,
+      title: 'Documents to Carry',
+      shortTitle: 'Documents',
+      icon: 'folder_open',
+      phase: 'on-day'
+    },
+    {
+      id: 6,
+      title: 'At Polling Station',
+      shortTitle: 'At Booth',
+      icon: 'domain',
+      phase: 'on-day'
+    },
+    {
+      id: 7,
+      title: 'Cast Your Vote',
+      shortTitle: 'Vote',
+      icon: 'how_to_vote',
+      phase: 'on-day'
+    },
+  ];
+
   return (
     <>
-      
-{/*  Header Section  */}
-<header className="mb-xl text-center">
-<span className="font-label-caps text-secondary tracking-widest mb-md block">EDUCATIONAL JOURNEY</span>
-<h1 className="font-h1 text-h1 text-primary mb-md">How Elections Work in India</h1>
-<p className="font-body-lg text-body-lg text-outline max-w-2xl mx-auto">
-                Explore the massive organizational feat of the world's largest democracy through our interactive step-by-step guide.
-            </p>
-</header>
-{/*  Visual Flow Diagram (High-Level)  */}
-<section className="mb-xl">
-<div className="bg-white rounded-xl p-lg shadow-[0px_10px_30px_rgba(30,58,138,0.04)] border border-surface-container overflow-x-auto">
-<div className="flex items-center justify-between min-w-[800px] px-md">
-{/*  Flow Node 1  */}
-<div className="flex flex-col items-center gap-sm group">
-<div className="w-12 h-12 rounded-full bg-primary-fixed flex items-center justify-center text-primary border-2 border-primary">
-<span className="material-symbols-outlined" data-icon="campaign">campaign</span>
-</div>
-<span className="font-label-caps text-primary">Announcement</span>
-</div>
-{/*  Connector  */}
-<div className="flex-grow h-0.5 bg-primary mx-xs relative">
-<div className="absolute -right-1 -top-1 w-2 h-2 rounded-full bg-primary"></div>
-</div>
-{/*  Flow Node 2  */}
-<div className="flex flex-col items-center gap-sm">
-<div className="w-12 h-12 rounded-full bg-primary-fixed flex items-center justify-center text-primary border-2 border-primary">
-<span className="material-symbols-outlined" data-icon="description">description</span>
-</div>
-<span className="font-label-caps text-primary">Nomination</span>
-</div>
-{/*  Connector  */}
-<div className="flex-grow h-0.5 bg-primary mx-xs relative">
-<div className="absolute -right-1 -top-1 w-2 h-2 rounded-full bg-primary"></div>
-</div>
-{/*  Flow Node 3  */}
-<div className="flex flex-col items-center gap-sm">
-<div className="w-12 h-12 rounded-full bg-primary-fixed flex items-center justify-center text-primary border-2 border-primary">
-<span className="material-symbols-outlined" data-icon="groups">groups</span>
-</div>
-<span className="font-label-caps text-primary">Campaign</span>
-</div>
-{/*  Connector (Dashed for current)  */}
-<div className="flex-grow h-0.5 border-t-2 border-dashed border-primary mx-xs relative">
-<div className="absolute -right-1 -top-1 w-2 h-2 rounded-full bg-primary"></div>
-</div>
-{/*  Flow Node 4  */}
-<div className="flex flex-col items-center gap-sm">
-<div className="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center text-outline border-2 border-outline-variant">
-<span className="material-symbols-outlined" data-icon="how_to_vote">how_to_vote</span>
-</div>
-<span className="font-label-caps text-outline">Voting</span>
-</div>
-{/*  Connector  */}
-<div className="flex-grow h-0.5 border-t-2 border-dashed border-outline-variant mx-xs relative">
-<div className="absolute -right-1 -top-1 w-2 h-2 rounded-full bg-outline-variant"></div>
-</div>
-{/*  Flow Node 5  */}
-<div className="flex flex-col items-center gap-sm">
-<div className="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center text-outline border-2 border-outline-variant">
-<span className="material-symbols-outlined" data-icon="count">numbers</span>
-</div>
-<span className="font-label-caps text-outline">Counting</span>
-</div>
-</div>
-</div>
-</section>
-{/*  Bento Grid / Interactive Steps Panel  */}
-<div className="grid grid-cols-1 lg:grid-cols-12 gap-gutter items-start">
-{/*  Left: Timeline Navigation  */}
-<div className="lg:col-span-4 space-y-md">
-<div className="bg-white p-6 rounded-xl border border-surface-container-high step-active transition-all">
-<div className="flex gap-md">
-<div className="text-primary font-h3">01</div>
-<div>
-<h3 className="font-h3 text-h3 text-primary mb-xs">Announcement</h3>
-<p className="text-on-surface-variant text-sm">The Election Commission issues the Model Code of Conduct.</p>
-</div>
-</div>
-</div>
-<div className="bg-surface-container-low p-6 rounded-xl border border-transparent hover:border-outline-variant transition-all cursor-pointer">
-<div className="flex gap-md">
-<div className="text-outline font-h3">02</div>
-<div>
-<h3 className="font-h3 text-h3 text-on-surface mb-xs">Nomination</h3>
-<p className="text-on-surface-variant text-sm">Candidates file their papers and disclose assets/records.</p>
-</div>
-</div>
-</div>
-<div className="bg-surface-container-low p-6 rounded-xl border border-transparent hover:border-outline-variant transition-all cursor-pointer">
-<div className="flex gap-md">
-<div className="text-outline font-h3">03</div>
-<div>
-<h3 className="font-h3 text-h3 text-on-surface mb-xs">Campaigning</h3>
-<p className="text-on-surface-variant text-sm">Parties release manifestos and hold public rallies.</p>
-</div>
-</div>
-</div>
-<div className="bg-surface-container-low p-6 rounded-xl border border-transparent hover:border-outline-variant transition-all cursor-pointer">
-<div className="flex gap-md">
-<div className="text-outline font-h3">04</div>
-<div>
-<h3 className="font-h3 text-h3 text-on-surface mb-xs">Voting (EVM)</h3>
-<p className="text-on-surface-variant text-sm">Citizens cast their ballots using secure EVM machines.</p>
-</div>
-</div>
-</div>
-</div>
-{/*  Right: Detail Panel (Visual Focus)  */}
-<div className="lg:col-span-8">
-<div className="bg-white rounded-xl shadow-[0px_10px_30px_rgba(30,58,138,0.04)] border border-surface-container p-lg min-h-[500px] flex flex-col">
-<div className="flex items-center justify-between mb-lg">
-<div className="flex items-center gap-md">
-<span className="material-symbols-outlined text-4xl text-secondary" data-icon="settings_input_component">settings_input_component</span>
-<h2 className="font-h2 text-h2 text-primary">Stage 04: Voting (EVM Focus)</h2>
-</div>
-<span className="bg-secondary-fixed text-on-secondary-fixed px-4 py-1 rounded-full font-label-caps">In Progress</span>
-</div>
-<div className="grid grid-cols-1 md:grid-cols-2 gap-lg flex-grow">
-<div className="space-y-lg">
-<div>
-<h4 className="font-h3 text-body-lg font-bold text-primary mb-sm">The EVM &amp; VVPAT System</h4>
-<p className="text-body-md text-on-surface-variant">
-                                    India uses Electronic Voting Machines (EVMs) connected to Voter Verifiable Paper Audit Trail (VVPAT) units. This ensures every vote is recorded electronically and verifiable via a physical slip.
-                                </p>
-</div>
-<ul className="space-y-md">
-<li className="flex items-start gap-sm">
-<span className="material-symbols-outlined text-primary" data-icon="check_circle" data-weight="fill">check_circle</span>
-<span className="text-body-md">Tamper-proof stand-alone units (not connected to internet).</span>
-</li>
-<li className="flex items-start gap-sm">
-<span className="material-symbols-outlined text-primary" data-icon="check_circle" data-weight="fill">check_circle</span>
-<span className="text-body-md">VVPAT displays a paper slip for 7 seconds to the voter.</span>
-</li>
-<li className="flex items-start gap-sm">
-<span className="material-symbols-outlined text-primary" data-icon="check_circle" data-weight="fill">check_circle</span>
-<span className="text-body-md">Two-stage randomization for machine allocation.</span>
-</li>
-</ul>
-</div>
-<div className="rounded-xl overflow-hidden relative group">
-<img alt="EVM Voting Process" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="A detailed, modern close-up shot of an Indian Electronic Voting Machine (EVM) in a well-lit, professional setting. The image uses a soft focus background to emphasize the interface of the machine, which is colored in a clean, industrial blue and white. The lighting is high-key and bright, creating a clean light-mode aesthetic that feels authoritative and secure. The overall mood is one of democratic precision and modern technological reliability, with subtle accents of saffron and green appearing in the background to reflect the Indian national colors." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAr118HFitwDydi238CXcNm5tERHWl7IGfCgc06a01_k8NvWHkV9v0frFnWqxYg0OJgdKTxsVYty3OvDxjp7XqabNURjfDScfOWLunJfNq-la-bVn-zNnpiuHJFOIyRcEzA23Ul6xG_66Ho69YWl5Ycizt2X23EgwAS_fE9wsWsj7czOSDpu7JrWEfQTJ-ouFl0vHyResoCCKoEsA1_srPjOl9SWn64cC18N23o8CYD4PlmLXbyLL3Behu4E4tU1Fxd9y7icddWjgrI"/>
-<div className="absolute bottom-0 left-0 right-0 p-lg bg-gradient-to-t from-black/80 to-transparent">
-<p className="text-white text-sm font-medium">Inside a Model Polling Station: Secure voting booths ensure complete privacy and security for every citizen.</p>
-</div>
-</div>
-</div>
-<div className="mt-xl flex items-center justify-between border-t pt-lg border-surface-container">
-<div className="flex gap-md">
-<button className="flex items-center gap-xs font-button text-primary hover:bg-primary-fixed px-4 py-2 rounded-lg transition-colors">
-<span className="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
-                                Previous Step
-                            </button>
-<button className="flex items-center gap-xs font-button text-primary hover:bg-primary-fixed px-4 py-2 rounded-lg transition-colors">
-                                Next Step
-                                <span className="material-symbols-outlined" data-icon="arrow_forward">arrow_forward</span>
-</button>
-</div>
-<button className="saffron-button bg-secondary text-white px-lg py-md rounded-lg font-button flex items-center gap-sm transition-all">
-                            Take Progress Quiz
-                            <span className="material-symbols-outlined" data-icon="quiz">quiz</span>
-</button>
-</div>
-</div>
-</div>
-</div>
-{/*  Call to Action / Assessment  */}
-<section className="mt-xl bg-primary-container rounded-2xl p-xl text-center relative overflow-hidden">
-<div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
-<div className="absolute top-10 left-10 w-64 h-64 bg-secondary rounded-full blur-3xl"></div>
-<div className="absolute bottom-10 right-10 w-64 h-64 bg-primary-fixed-dim rounded-full blur-3xl"></div>
-</div>
-<div className="relative z-10">
-<h2 className="font-h2 text-h2 text-white mb-md">Ready to test your knowledge?</h2>
-<p className="text-on-primary-container text-body-lg max-w-xl mx-auto mb-lg">
-                    Mastered the election process? Take our 5-minute interactive quiz to earn your 'Democracy Guardian' badge.
-                </p>
-<div className="flex flex-col sm:flex-row justify-center gap-md">
-<button className="bg-secondary text-white font-button px-xl py-md rounded-lg saffron-button">
-                        Start Final Quiz
-                    </button>
-<button className="bg-white/10 text-white border border-white/20 font-button px-xl py-md rounded-lg hover:bg-white/20 transition-colors">
-                        Download Cheat Sheet (PDF)
-                    </button>
-</div>
-</div>
-</section>
+      {/* Header */}
+      <div className="text-center mb-12">
+        <span className="text-secondary font-label-caps tracking-widest">STEP BY STEP GUIDE</span>
+        <h1 className="font-h1 text-4xl md:text-5xl text-primary mt-4">Your Complete Voting Guide</h1>
+        <p className="text-on-surface-variant mt-4 max-w-2xl mx-auto text-lg">
+          From registration to casting your vote - everything you need to know to participate in India's democracy.
+        </p>
+      </div>
 
+      {/* Progress Steps */}
+      <div className="mb-12 overflow-x-auto pb-4">
+        <div className="flex justify-center gap-2 min-w-max px-4">
+          {processSteps.map((step) => (
+            <button
+              key={step.id}
+              onClick={() => setActiveStep(step.id)}
+              className={`flex flex-col items-center gap-2 px-4 py-3 rounded-xl transition-all ${
+                activeStep === step.id
+                  ? 'bg-primary text-white shadow-lg scale-105'
+                  : activeStep > step.id
+                  ? 'bg-green-100 text-green-700'
+                  : 'bg-slate-100 text-slate-500 hover:bg-slate-200'
+              }`}
+            >
+              <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                activeStep === step.id ? 'bg-white/20' : activeStep > step.id ? 'bg-green-200' : 'bg-white'
+              }`}>
+                {activeStep > step.id ? (
+                  <span className="material-symbols-outlined text-green-600">check</span>
+                ) : (
+                  <span className="material-symbols-outlined">{step.icon}</span>
+                )}
+              </div>
+              <span className="text-xs font-medium whitespace-nowrap">{step.shortTitle}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Phase Indicator */}
+      <div className="flex justify-center gap-4 mb-8">
+        <span className={`px-4 py-2 rounded-full text-sm font-medium ${activeStep <= 4 ? 'bg-primary text-white' : 'bg-slate-100 text-slate-500'}`}>
+          Before Election Day
+        </span>
+        <span className={`px-4 py-2 rounded-full text-sm font-medium ${activeStep >= 5 ? 'bg-secondary text-white' : 'bg-slate-100 text-slate-500'}`}>
+          On Election Day
+        </span>
+      </div>
+
+      {/* Step Content */}
+      <div className="bg-white rounded-3xl shadow-lg border border-slate-100 p-8 md:p-12 min-h-[500px]">
+        {/* Step 1: Eligibility */}
+        {activeStep === 1 && (
+          <div className="animate-fadeIn">
+            <div className="flex items-center gap-4 mb-8">
+              <div className="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center text-white">
+                <span className="material-symbols-outlined text-3xl">checklist</span>
+              </div>
+              <div>
+                <span className="text-secondary font-label-caps">Step 1</span>
+                <h2 className="font-h2 text-2xl text-primary">Check Your Eligibility</h2>
+              </div>
+            </div>
+
+            <p className="text-on-surface-variant text-lg mb-8">
+              Before registering, make sure you meet all the eligibility criteria to vote in Indian elections.
+            </p>
+
+            <div className="grid md:grid-cols-2 gap-4">
+              {eligibilityCriteria.map((criteria, index) => (
+                <div key={index} className="flex gap-4 p-4 bg-green-50 rounded-xl border border-green-100">
+                  <div className="w-10 h-10 bg-green-500 text-white rounded-full flex items-center justify-center flex-shrink-0">
+                    <span className="material-symbols-outlined text-xl">{criteria.icon}</span>
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-primary">{criteria.label}</h4>
+                    <p className="text-on-surface-variant text-sm">{criteria.value}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-8 p-6 bg-primary/5 rounded-xl border-l-4 border-primary">
+              <p className="text-primary font-medium">
+                <span className="material-symbols-outlined align-middle mr-2">info</span>
+                The qualifying date for age is January 1st of the year. If you turn 18 after January 1st, you'll need to wait for the next enrollment period.
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* Step 2: Register */}
+        {activeStep === 2 && (
+          <div className="animate-fadeIn">
+            <div className="flex items-center gap-4 mb-8">
+              <div className="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center text-white">
+                <span className="material-symbols-outlined text-3xl">app_registration</span>
+              </div>
+              <div>
+                <span className="text-secondary font-label-caps">Step 2</span>
+                <h2 className="font-h2 text-2xl text-primary">Register as a Voter</h2>
+              </div>
+            </div>
+
+            <p className="text-on-surface-variant text-lg mb-8">
+              You can register to vote through multiple methods. Choose the one most convenient for you.
+            </p>
+
+            <div className="grid md:grid-cols-3 gap-6 mb-8">
+              {registrationMethods.map((method, index) => (
+                <div key={index} className="p-6 bg-gradient-to-br from-slate-50 to-white rounded-xl border border-slate-100">
+                  <div className="w-12 h-12 bg-primary/10 text-primary rounded-xl flex items-center justify-center mb-4">
+                    <span className="material-symbols-outlined text-2xl">{method.icon}</span>
+                  </div>
+                  <h3 className="font-h3 text-lg text-primary mb-2">{method.method}</h3>
+                  <p className="text-on-surface-variant text-sm">{method.steps}</p>
+                </div>
+              ))}
+            </div>
+
+            <div className="bg-secondary/10 p-6 rounded-xl">
+              <h3 className="font-h3 text-lg text-secondary mb-4 flex items-center gap-2">
+                <span className="material-symbols-outlined">folder</span>
+                Required Documents
+              </h3>
+              <ul className="space-y-2">
+                {requiredDocuments.map((doc, index) => (
+                  <li key={index} className="flex items-start gap-3">
+                    <span className="material-symbols-outlined text-secondary text-sm mt-1">check_circle</span>
+                    <span className="text-on-surface-variant">{doc}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <a
+              href="https://voters.eci.gov.in"
+              target="_blank"
+              rel="noreferrer"
+              className="mt-8 inline-flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-xl font-button hover:bg-primary-container transition-colors"
+            >
+              Register Online Now <span className="material-symbols-outlined text-sm">open_in_new</span>
+            </a>
+          </div>
+        )}
+
+        {/* Step 3: Voter ID */}
+        {activeStep === 3 && (
+          <div className="animate-fadeIn">
+            <div className="flex items-center gap-4 mb-8">
+              <div className="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center text-white">
+                <span className="material-symbols-outlined text-3xl">badge</span>
+              </div>
+              <div>
+                <span className="text-secondary font-label-caps">Step 3</span>
+                <h2 className="font-h2 text-2xl text-primary">Get Your Voter ID (EPIC)</h2>
+              </div>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-8">
+              <div>
+                <h3 className="font-h3 text-lg text-primary mb-4">What is EPIC?</h3>
+                <p className="text-on-surface-variant mb-4">
+                  Electoral Photo Identity Card (EPIC) is the primary ID for voting. It's automatically sent after your registration is approved.
+                </p>
+                <div className="space-y-3">
+                  <div className="flex items-start gap-3">
+                    <span className="material-symbols-outlined text-green-500">check_circle</span>
+                    <span className="text-on-surface-variant">Contains your photo and details</span>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <span className="material-symbols-outlined text-green-500">check_circle</span>
+                    <span className="text-on-surface-variant">Unique EPIC number for identification</span>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <span className="material-symbols-outlined text-green-500">check_circle</span>
+                    <span className="text-on-surface-variant">Can be used as general ID proof</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-gradient-to-br from-primary to-primary-container p-6 rounded-xl text-white">
+                <h3 className="font-h3 text-lg mb-4 flex items-center gap-2">
+                  <span className="material-symbols-outlined">download</span>
+                  Download e-EPIC
+                </h3>
+                <p className="text-white/80 mb-4">Get digital version of your Voter ID</p>
+                <ol className="space-y-2 text-sm">
+                  <li className="flex gap-2">
+                    <span className="bg-white/20 w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0">1</span>
+                    Visit voters.eci.gov.in
+                  </li>
+                  <li className="flex gap-2">
+                    <span className="bg-white/20 w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0">2</span>
+                    Login with mobile/email
+                  </li>
+                  <li className="flex gap-2">
+                    <span className="bg-white/20 w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0">3</span>
+                    Go to "Download e-EPIC"
+                  </li>
+                  <li className="flex gap-2">
+                    <span className="bg-white/20 w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0">4</span>
+                    Download PDF voter ID
+                  </li>
+                </ol>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Step 4: Find Polling Station */}
+        {activeStep === 4 && (
+          <div className="animate-fadeIn">
+            <div className="flex items-center gap-4 mb-8">
+              <div className="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center text-white">
+                <span className="material-symbols-outlined text-3xl">location_on</span>
+              </div>
+              <div>
+                <span className="text-secondary font-label-caps">Step 4</span>
+                <h2 className="font-h2 text-2xl text-primary">Find Your Polling Station</h2>
+              </div>
+            </div>
+
+            <p className="text-on-surface-variant text-lg mb-8">
+              Before election day, make sure you know exactly where to go to cast your vote.
+            </p>
+
+            <div className="grid md:grid-cols-3 gap-6">
+              <div className="p-6 bg-slate-50 rounded-xl border border-slate-100">
+                <div className="w-12 h-12 bg-primary text-white rounded-xl flex items-center justify-center mb-4">
+                  <span className="material-symbols-outlined">computer</span>
+                </div>
+                <h3 className="font-h3 text-lg text-primary mb-2">Online</h3>
+                <p className="text-on-surface-variant text-sm">
+                  voters.eci.gov.in → Search Electoral Roll → View polling station
+                </p>
+              </div>
+
+              <div className="p-6 bg-slate-50 rounded-xl border border-slate-100">
+                <div className="w-12 h-12 bg-secondary text-white rounded-xl flex items-center justify-center mb-4">
+                  <span className="material-symbols-outlined">sms</span>
+                </div>
+                <h3 className="font-h3 text-lg text-primary mb-2">SMS</h3>
+                <p className="text-on-surface-variant text-sm">
+                  Send EPIC&lt;space&gt;EPIC_NUMBER to 1950
+                </p>
+              </div>
+
+              <div className="p-6 bg-slate-50 rounded-xl border border-slate-100">
+                <div className="w-12 h-12 bg-green-500 text-white rounded-xl flex items-center justify-center mb-4">
+                  <span className="material-symbols-outlined">smartphone</span>
+                </div>
+                <h3 className="font-h3 text-lg text-primary mb-2">App</h3>
+                <p className="text-on-surface-variant text-sm">
+                  Voter Helpline App → Know Your Polling Booth
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-8 p-6 bg-secondary/10 rounded-xl">
+              <p className="text-secondary font-medium">
+                <span className="material-symbols-outlined align-middle mr-2">tips_and_updates</span>
+                Pro Tip: Visit your polling station before election day to familiarize yourself with the location and avoid confusion.
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* Step 5: Documents */}
+        {activeStep === 5 && (
+          <div className="animate-fadeIn">
+            <div className="flex items-center gap-4 mb-8">
+              <div className="w-16 h-16 bg-secondary rounded-2xl flex items-center justify-center text-white">
+                <span className="material-symbols-outlined text-3xl">folder_open</span>
+              </div>
+              <div>
+                <span className="text-secondary font-label-caps">Step 5 - Election Day</span>
+                <h2 className="font-h2 text-2xl text-primary">Documents to Carry</h2>
+              </div>
+            </div>
+
+            <p className="text-on-surface-variant text-lg mb-8">
+              You need to carry any ONE of the following approved photo IDs to the polling station.
+            </p>
+
+            <div className="grid md:grid-cols-3 gap-3">
+              {acceptedIDs.map((id, index) => (
+                <div key={index} className="flex items-center gap-3 p-3 bg-green-50 rounded-xl border border-green-100">
+                  <span className="material-symbols-outlined text-green-500">check_circle</span>
+                  <span className="text-on-surface text-sm">{id}</span>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-8 p-6 bg-primary/5 rounded-xl border-l-4 border-primary">
+              <p className="text-primary font-medium">
+                <span className="material-symbols-outlined align-middle mr-2">info</span>
+                Voter ID is preferred but not mandatory. You can vote with any of the 12 approved IDs as long as your name is in the electoral roll.
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* Step 6: At Polling Station */}
+        {activeStep === 6 && (
+          <div className="animate-fadeIn">
+            <div className="flex items-center gap-4 mb-8">
+              <div className="w-16 h-16 bg-secondary rounded-2xl flex items-center justify-center text-white">
+                <span className="material-symbols-outlined text-3xl">domain</span>
+              </div>
+              <div>
+                <span className="text-secondary font-label-caps">Step 6 - Election Day</span>
+                <h2 className="font-h2 text-2xl text-primary">At the Polling Station</h2>
+              </div>
+            </div>
+
+            <div className="grid md:grid-cols-4 gap-4">
+              {[
+                { stage: 'Queue', description: 'Stand in line at your designated booth', icon: 'groups' },
+                { stage: 'Verification', description: 'Officer checks your ID and marks name', icon: 'verified_user' },
+                { stage: 'Indelible Ink', description: 'Left index finger marked with ink', icon: 'ink_pen' },
+                { stage: 'Proceed', description: 'Go to EVM booth to cast vote', icon: 'arrow_forward' },
+              ].map((item, index) => (
+                <div key={index} className="relative">
+                  <div className="text-center p-6 bg-gradient-to-br from-slate-50 to-white rounded-xl border border-slate-100">
+                    <div className="w-12 h-12 bg-secondary text-white rounded-full flex items-center justify-center mx-auto mb-4">
+                      <span className="material-symbols-outlined">{item.icon}</span>
+                    </div>
+                    <h3 className="font-h3 text-primary mb-2">{item.stage}</h3>
+                    <p className="text-on-surface-variant text-sm">{item.description}</p>
+                  </div>
+                  {index < 3 && (
+                    <div className="hidden md:block absolute top-1/2 -right-2 transform -translate-y-1/2 z-10">
+                      <span className="material-symbols-outlined text-secondary">chevron_right</span>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-8 p-6 bg-purple-50 rounded-xl border border-purple-100">
+              <h3 className="font-h3 text-purple-700 mb-2 flex items-center gap-2">
+                <span className="material-symbols-outlined">ink_pen</span>
+                About Indelible Ink
+              </h3>
+              <p className="text-purple-600 text-sm">
+                The ink mark on your finger stays for 2-4 weeks. It prevents duplicate voting and is a proud symbol of participating in democracy!
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* Step 7: Cast Vote */}
+        {activeStep === 7 && (
+          <div className="animate-fadeIn">
+            <div className="flex items-center gap-4 mb-8">
+              <div className="w-16 h-16 bg-secondary rounded-2xl flex items-center justify-center text-white">
+                <span className="material-symbols-outlined text-3xl">how_to_vote</span>
+              </div>
+              <div>
+                <span className="text-secondary font-label-caps">Step 7 - Election Day</span>
+                <h2 className="font-h2 text-2xl text-primary">Cast Your Vote (EVM Process)</h2>
+              </div>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-8">
+              <div>
+                <h3 className="font-h3 text-lg text-primary mb-4">How to Use the EVM</h3>
+                <div className="space-y-3">
+                  {evmSteps.map((item) => (
+                    <div key={item.step} className="flex gap-4 p-3 bg-slate-50 rounded-xl">
+                      <div className="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center flex-shrink-0 font-bold">
+                        {item.step}
+                      </div>
+                      <p className="text-on-surface-variant">{item.instruction}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="space-y-6">
+                <div className="bg-gradient-to-br from-primary to-primary-container p-6 rounded-xl text-white">
+                  <h3 className="font-h3 text-lg mb-4 flex items-center gap-2">
+                    <span className="material-symbols-outlined">receipt</span>
+                    VVPAT Verification
+                  </h3>
+                  <p className="text-white/80 text-sm">
+                    After pressing the button, a paper slip appears for 7 seconds showing your vote. This is your verification that the vote was recorded correctly.
+                  </p>
+                </div>
+
+                <div className="bg-orange-50 p-6 rounded-xl border border-orange-100">
+                  <h3 className="font-h3 text-orange-700 mb-2 flex items-center gap-2">
+                    <span className="material-symbols-outlined">block</span>
+                    NOTA Option
+                  </h3>
+                  <p className="text-orange-600 text-sm">
+                    If you don't want to vote for any candidate, you can select "None of the Above" (NOTA) - the last option on the EVM. Your right to reject is protected.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Navigation Buttons */}
+        <div className="flex justify-between mt-12 pt-8 border-t border-slate-100">
+          <button
+            onClick={() => setActiveStep(Math.max(1, activeStep - 1))}
+            disabled={activeStep === 1}
+            className={`flex items-center gap-2 px-6 py-3 rounded-xl font-button transition-all ${
+              activeStep === 1 ? 'bg-slate-100 text-slate-400 cursor-not-allowed' : 'bg-slate-100 text-primary hover:bg-slate-200'
+            }`}
+          >
+            <span className="material-symbols-outlined">arrow_back</span>
+            Previous
+          </button>
+
+          {activeStep < 7 ? (
+            <button
+              onClick={() => setActiveStep(activeStep + 1)}
+              className="flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-xl font-button hover:bg-primary-container transition-all"
+            >
+              Next Step
+              <span className="material-symbols-outlined">arrow_forward</span>
+            </button>
+          ) : (
+            <Link
+              to="/quiz"
+              className="flex items-center gap-2 bg-secondary text-white px-6 py-3 rounded-xl font-button hover:bg-orange-600 transition-all"
+            >
+              Take the Quiz
+              <span className="material-symbols-outlined">quiz</span>
+            </Link>
+          )}
+        </div>
+      </div>
+
+      {/* Your Rights Section */}
+      <section className="mt-16">
+        <h2 className="font-h2 text-2xl text-primary mb-8 text-center">Your Rights as a Voter</h2>
+        <div className="grid md:grid-cols-3 gap-6">
+          {voterRights.map((item, index) => (
+            <div key={index} className="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
+              <div className="w-12 h-12 bg-primary/10 text-primary rounded-xl flex items-center justify-center mb-4">
+                <span className="material-symbols-outlined text-2xl">{item.icon}</span>
+              </div>
+              <h3 className="font-h3 text-lg text-primary mb-2">{item.right}</h3>
+              <p className="text-on-surface-variant text-sm">{item.description}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* FAQs */}
+      <section className="mt-16">
+        <h2 className="font-h2 text-2xl text-primary mb-8 text-center">Common Questions</h2>
+        <div className="space-y-4 max-w-3xl mx-auto">
+          {faqs.map((faq, index) => (
+            <details key={index} className="bg-white p-6 rounded-xl shadow-sm border border-slate-100 group">
+              <summary className="flex justify-between items-center cursor-pointer font-h3 text-primary list-none">
+                {faq.question}
+                <span className="material-symbols-outlined text-secondary group-open:rotate-180 transition-transform">expand_more</span>
+              </summary>
+              <p className="mt-4 text-on-surface-variant pt-4 border-t border-slate-100">{faq.answer}</p>
+            </details>
+          ))}
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section className="mt-16 bg-gradient-to-br from-primary to-primary-container p-12 rounded-3xl text-white text-center">
+        <h2 className="font-h1 text-3xl mb-4">Ready to Test Your Knowledge?</h2>
+        <p className="text-white/80 mb-8 max-w-xl mx-auto">
+          You've learned the complete voting process. Now prove your understanding and earn your Civic Champion certificate!
+        </p>
+        <Link
+          to="/quiz"
+          className="inline-flex items-center gap-2 bg-secondary text-white px-8 py-4 rounded-xl font-button text-lg hover:bg-orange-600 transition-colors"
+        >
+          <span className="material-symbols-outlined">quiz</span>
+          Take the Quiz
+        </Link>
+      </section>
     </>
   );
 }

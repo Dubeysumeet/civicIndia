@@ -1,152 +1,471 @@
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+
+type Level = 'beginner' | 'intermediate' | 'advanced';
+type QuizState = 'selection' | 'quiz' | 'result';
+
+interface Question {
+  question: string;
+  options: string[];
+  answer: number;
+  explanation: string;
+}
 
 export default function Quiz() {
+  const [quizState, setQuizState] = useState<QuizState>('selection');
+  const [selectedLevel, setSelectedLevel] = useState<Level | null>(null);
+  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
+  const [showExplanation, setShowExplanation] = useState(false);
+  const [score, setScore] = useState(0);
+  const [answers, setAnswers] = useState<(number | null)[]>([]);
+
+  const levels = [
+    {
+      id: 'beginner' as Level,
+      name: 'Beginner',
+      description: 'Basic election concepts',
+      questions: 10,
+      passScore: 60,
+      badge: 'Civic Learner',
+      badgeColor: 'from-amber-400 to-amber-600',
+      icon: 'school'
+    },
+    {
+      id: 'intermediate' as Level,
+      name: 'Intermediate',
+      description: 'Process & rights knowledge',
+      questions: 10,
+      passScore: 70,
+      badge: 'Informed Voter',
+      badgeColor: 'from-slate-400 to-slate-600',
+      icon: 'psychology'
+    },
+    {
+      id: 'advanced' as Level,
+      name: 'Advanced',
+      description: 'Constitution & history deep dive',
+      questions: 10,
+      passScore: 80,
+      badge: 'Civic Champion',
+      badgeColor: 'from-yellow-400 to-yellow-600',
+      icon: 'emoji_events'
+    }
+  ];
+
+  const questionBank: Record<Level, Question[]> = {
+    beginner: [
+      { question: 'What is the minimum age to vote in India?', options: ['16 years', '18 years', '21 years', '25 years'], answer: 1, explanation: 'The voting age in India was reduced from 21 to 18 years by the 61st Constitutional Amendment in 1989.' },
+      { question: 'Who conducts elections in India?', options: ['Supreme Court', 'Parliament', 'Election Commission', 'President'], answer: 2, explanation: 'The Election Commission of India (ECI) is an autonomous constitutional authority responsible for administering elections.' },
+      { question: 'What does EVM stand for?', options: ['Electronic Voting Machine', 'Election Voting Method', 'Electoral Vote Mechanism', 'Easy Vote Machine'], answer: 0, explanation: 'EVM stands for Electronic Voting Machine, first used in India in 1982.' },
+      { question: 'What is NOTA?', options: ['A political party', 'None of the Above option', 'Type of ballot', 'Voter ID'], answer: 1, explanation: 'NOTA (None of the Above) was introduced in 2013 by the Supreme Court, allowing voters to reject all candidates.' },
+      { question: 'How often are Lok Sabha elections held?', options: ['Every 2 years', 'Every 4 years', 'Every 5 years', 'Every 6 years'], answer: 2, explanation: 'Lok Sabha elections are held every 5 years unless dissolved earlier.' },
+      { question: 'What is National Voters Day?', options: ['26th January', '15th August', '25th January', '2nd October'], answer: 2, explanation: 'National Voters Day is celebrated on 25th January, the foundation day of ECI (1950).' },
+      { question: 'What is the purpose of indelible ink?', options: ['Decoration', 'Prevent duplicate voting', 'Party symbol', 'Counting votes'], answer: 1, explanation: 'Indelible ink marks the finger to prevent a person from voting more than once.' },
+      { question: 'What is a constituency?', options: ['Type of election', 'Geographic voting area', 'Political party', 'Voter ID'], answer: 1, explanation: 'A constituency is a geographic area that elects one representative to the legislature.' },
+      { question: 'Which document is the primary ID for voting?', options: ['Aadhaar Card', 'PAN Card', 'Voter ID (EPIC)', 'Passport'], answer: 2, explanation: 'EPIC (Electoral Photo Identity Card) is the primary voting ID, though other IDs are also accepted.' },
+      { question: 'What is VVPAT?', options: ['Voting app', 'Paper slip verification system', 'Voter registration form', 'Election officer'], answer: 1, explanation: 'VVPAT (Voter Verifiable Paper Audit Trail) shows a paper slip for 7 seconds to verify your vote.' },
+    ],
+    intermediate: [
+      { question: 'Which article provides universal adult suffrage?', options: ['Article 14', 'Article 21', 'Article 324', 'Article 326'], answer: 3, explanation: 'Article 326 of the Indian Constitution provides for universal adult suffrage.' },
+      { question: 'When was EVM first used in India?', options: ['1977', '1982', '1991', '2004'], answer: 1, explanation: 'EVMs were first used on an experimental basis in 1982 in Paravur, Kerala.' },
+      { question: 'How many seats are in Lok Sabha?', options: ['500', '543', '545', '552'], answer: 1, explanation: 'Lok Sabha has 543 elected seats. 2 additional seats can be nominated by the President.' },
+      { question: 'What was the voting age before 1989?', options: ['18 years', '19 years', '20 years', '21 years'], answer: 3, explanation: 'The 61st Constitutional Amendment (1989) reduced voting age from 21 to 18 years.' },
+      { question: 'When was NOTA introduced?', options: ['2009', '2013', '2014', '2019'], answer: 1, explanation: 'NOTA was introduced in September 2013 following a Supreme Court judgment.' },
+      { question: 'What is Model Code of Conduct?', options: ['Constitution chapter', 'Rules during elections', 'Voting process', 'Candidate eligibility'], answer: 1, explanation: 'MCC is a set of guidelines issued by ECI to regulate political parties and candidates during elections.' },
+      { question: 'Minimum age to contest Lok Sabha elections?', options: ['18 years', '21 years', '25 years', '30 years'], answer: 2, explanation: 'A person must be at least 25 years old to contest Lok Sabha elections.' },
+      { question: 'How long does VVPAT show the paper slip?', options: ['3 seconds', '5 seconds', '7 seconds', '10 seconds'], answer: 2, explanation: 'The VVPAT displays a paper slip for 7 seconds before it falls into a sealed box.' },
+      { question: 'Which amendment reduced voting age to 18?', options: ['42nd', '52nd', '61st', '73rd'], answer: 2, explanation: 'The 61st Constitutional Amendment Act, 1988 (effective 1989) reduced voting age from 21 to 18.' },
+      { question: 'What is the term of a Rajya Sabha member?', options: ['4 years', '5 years', '6 years', 'Lifetime'], answer: 2, explanation: 'Rajya Sabha members serve for 6 years, with one-third retiring every 2 years.' },
+    ],
+    advanced: [
+      { question: "India's first general election had how many phases?", options: ['28', '48', '68', '88'], answer: 2, explanation: 'The first general election (1951-52) was conducted in 68 phases over 4 months.' },
+      { question: 'Which article bars court interference in elections?', options: ['Article 324', 'Article 326', 'Article 329', 'Article 330'], answer: 2, explanation: 'Article 329 bars courts from interfering in electoral matters during the election process.' },
+      { question: 'Who appoints the Chief Election Commissioner?', options: ['Prime Minister', 'Parliament', 'President', 'Supreme Court'], answer: 2, explanation: 'The President of India appoints the Chief Election Commissioner and Election Commissioners.' },
+      { question: 'Which amendment introduced Panchayati Raj?', options: ['61st', '73rd', '74th', '86th'], answer: 1, explanation: 'The 73rd Constitutional Amendment (1992) established the Panchayati Raj system.' },
+      { question: 'When was Election Commission established?', options: ['26th January 1950', '25th January 1950', '15th August 1947', '26th November 1949'], answer: 1, explanation: 'ECI was established on 25th January 1950, which is celebrated as National Voters Day.' },
+      { question: 'Dr. Ambedkar called which article "Heart and Soul" of Constitution?', options: ['Article 14', 'Article 21', 'Article 32', 'Article 326'], answer: 2, explanation: 'Article 32 (Right to Constitutional Remedies) was called the "Heart and Soul" of the Constitution.' },
+      { question: 'First state to use EVM in all constituencies?', options: ['Kerala', 'Goa', 'Delhi', 'Sikkim'], answer: 1, explanation: 'Goa became the first state to use EVMs in all constituencies in 1999.' },
+      { question: 'How many registered voters in 2024 elections?', options: ['850 million', '900 million', '969 million', '1 billion'], answer: 2, explanation: 'The 2024 Lok Sabha elections had approximately 969 million registered voters.' },
+      { question: 'Anti-defection law was introduced by which amendment?', options: ['42nd', '52nd', '61st', '73rd'], answer: 1, explanation: 'The 52nd Constitutional Amendment (1985) introduced the anti-defection law.' },
+      { question: 'Which article deals with Election Commission?', options: ['Article 280', 'Article 300', 'Article 324', 'Article 352'], answer: 2, explanation: 'Article 324 deals with the superintendence, direction, and control of elections by the Election Commission.' },
+    ]
+  };
+
+  const startQuiz = (level: Level) => {
+    setSelectedLevel(level);
+    setQuizState('quiz');
+    setCurrentQuestion(0);
+    setSelectedAnswer(null);
+    setShowExplanation(false);
+    setScore(0);
+    setAnswers([]);
+  };
+
+  const handleAnswer = (answerIndex: number) => {
+    if (selectedAnswer !== null) return;
+
+    setSelectedAnswer(answerIndex);
+    setShowExplanation(true);
+
+    const questions = questionBank[selectedLevel!];
+    if (answerIndex === questions[currentQuestion].answer) {
+      setScore(score + 1);
+    }
+    setAnswers([...answers, answerIndex]);
+  };
+
+  const nextQuestion = () => {
+    const questions = questionBank[selectedLevel!];
+    if (currentQuestion < questions.length - 1) {
+      setCurrentQuestion(currentQuestion + 1);
+      setSelectedAnswer(null);
+      setShowExplanation(false);
+    } else {
+      setQuizState('result');
+    }
+  };
+
+  const resetQuiz = () => {
+    setQuizState('selection');
+    setSelectedLevel(null);
+    setCurrentQuestion(0);
+    setSelectedAnswer(null);
+    setShowExplanation(false);
+    setScore(0);
+    setAnswers([]);
+  };
+
+  const getCurrentLevel = () => levels.find(l => l.id === selectedLevel);
+  const getPercentage = () => {
+    const questions = questionBank[selectedLevel!];
+    return Math.round((score / questions.length) * 100);
+  };
+  const isPassed = () => {
+    const level = getCurrentLevel();
+    return getPercentage() >= (level?.passScore || 0);
+  };
+
+  const getResultMessage = () => {
+    const percentage = getPercentage();
+    if (percentage >= 90) return { title: 'Outstanding!', message: "You're a true Civic Champion!", icon: 'star' };
+    if (percentage >= 80) return { title: 'Excellent!', message: "Impressive knowledge! You're well-prepared to vote.", icon: 'thumb_up' };
+    if (percentage >= 70) return { title: 'Great Job!', message: 'Good understanding! Review a few topics to strengthen your knowledge.', icon: 'sentiment_satisfied' };
+    if (percentage >= 60) return { title: 'You Passed!', message: 'You made it! Consider revisiting some sections.', icon: 'check_circle' };
+    return { title: 'Keep Learning!', message: "Don't give up! Review the material and try again.", icon: 'refresh' };
+  };
+
   return (
     <>
-      
-{/*  Header  */}
-<header className="text-center mb-12">
-<span className="font-label-caps text-label-caps text-secondary tracking-widest mb-2 block uppercase">Module 01: Fundamental Rights</span>
-<h1 className="font-h1 text-h1 text-primary mb-4">Test Your Knowledge</h1>
-<div className="flex items-center justify-center gap-2 text-outline">
-<span className="material-symbols-outlined text-md">timer</span>
-<span className="font-body-md text-sm">Estimated time: 5 minutes</span>
-</div>
-</header>
-{/*  Progress Indicator  */}
-<div className="w-full max-w-2xl mb-12">
-<div className="flex justify-between items-end mb-4">
-<span className="font-label-caps text-on-surface-variant">Question 4 of 10</span>
-<span className="font-h3 text-h3 text-primary">40%</span>
-</div>
-<div className="h-4 w-full bg-surface-container rounded-full overflow-hidden">
-<div className="h-full bg-gradient-to-r from-secondary to-tertiary-fixed-dim w-[40%] transition-all duration-500"></div>
-</div>
-</div>
-{/*  Quiz Container  */}
-<div className="grid grid-cols-1 lg:grid-cols-12 gap-8 w-full">
-{/*  Left: Sidebar Summary  */}
-<aside className="lg:col-span-3 space-y-6 order-2 lg:order-1">
-<div className="bg-white rounded-xl p-6 shadow-[0px_10px_30px_rgba(30,58,138,0.04)] border border-surface-container-low">
-<h3 className="font-h3 text-h3 text-primary mb-4 text-lg">Your Progress</h3>
-<div className="space-y-4">
-<div className="flex items-center gap-3">
-<span className="material-symbols-outlined text-green-600 font-bold" data-weight="fill">check_circle</span>
-<span className="text-body-md text-on-surface">3 Correct</span>
-</div>
-<div className="flex items-center gap-3">
-<span className="material-symbols-outlined text-error font-bold" data-weight="fill">cancel</span>
-<span className="text-body-md text-on-surface">0 Incorrect</span>
-</div>
-<div className="flex items-center gap-3">
-<span className="material-symbols-outlined text-outline">pending</span>
-<span className="text-body-md text-on-surface">7 Remaining</span>
-</div>
-</div>
-</div>
-<div className="rounded-xl overflow-hidden shadow-lg">
-<div className="relative h-40">
-<img className="w-full h-full object-cover" data-alt="A clean, minimalist 3D render of the Ashoka Chakra symbol reimagined in a contemporary glassmorphism style. The composition features soft, diffused lighting with highlights of deep blue and saffron against a crisp white studio background, evoking a sense of modern patriotic pride and educational clarity." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCWuIG1OYXkrfjtjxFNwgXHpz8NXpDtl8uz8TB9vQynBnvprHlHy_2BTEMhmtkav_W_w-T2eywbp6YFI8hKGMacWawoCBeilT0iUE5ctNHF9PgFQrUkOMnYC3BHMCZiLks1bl6NI6X8c2CDIRKUdCFOCLCbJCL_GcaI4rnCw5Sz1we-PNp2ReFk2i63XoEOGfR1WIUDIxWoLSXQfwoO_a3gD0ddLUgnlE3XMj8hpz4NkqvjVbnxTjySpgl868MI_TdLhkOD_lJx2Ifc"/>
-<div className="absolute inset-0 bg-gradient-to-t from-primary/80 to-transparent flex items-end p-4">
-<p className="text-white text-sm font-medium">Keep it up! You're in the top 10% of learners today.</p>
-</div>
-</div>
-</div>
-</aside>
-{/*  Center: Question Card  */}
-<section className="lg:col-span-9 order-1 lg:order-2">
-<div className="bg-white rounded-2xl p-8 lg:p-12 shadow-[0px_10px_40px_rgba(30,58,138,0.06)] border border-surface-container-low relative overflow-hidden">
-{/*  Subtle background decoration  */}
-<div className="absolute -top-12 -right-12 w-48 h-48 bg-primary/5 rounded-full blur-3xl"></div>
-<div className="relative z-10">
-<h2 className="font-h2 text-h2 text-on-surface mb-8">Which Article of the Indian Constitution ensures the Right to Constitutional Remedies?</h2>
-{/*  Options List  */}
-<div className="space-y-4 mb-10">
-{/*  Inactive State  */}
-<button className="w-full text-left p-6 rounded-xl border-2 border-surface-container hover:border-primary-container hover:bg-surface-container-low transition-all duration-200 group flex items-center justify-between">
-<div className="flex items-center gap-4">
-<span className="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center font-bold text-outline group-hover:bg-primary-container group-hover:text-white transition-colors">A</span>
-<span className="font-body-lg text-body-lg text-on-surface-variant">Article 14</span>
-</div>
-<span className="material-symbols-outlined text-outline group-hover:text-primary-container opacity-0 group-hover:opacity-100 transition-opacity">radio_button_unchecked</span>
-</button>
-{/*  Correct State Example  */}
-<button className="w-full text-left p-6 rounded-xl border-2 border-green-500 bg-green-50 flex items-center justify-between transition-all duration-200">
-<div className="flex items-center gap-4">
-<span className="w-10 h-10 rounded-full bg-green-500 flex items-center justify-center font-bold text-white">B</span>
-<span className="font-body-lg text-body-lg text-on-surface">Article 32</span>
-</div>
-<div className="flex items-center gap-2 text-green-600">
-<span className="font-label-caps">CORRECT</span>
-<span className="material-symbols-outlined" data-weight="fill">check_circle</span>
-</div>
-</button>
-{/*  Incorrect State Example  */}
-<button className="w-full text-left p-6 rounded-xl border-2 border-error-container bg-error-container/20 flex items-center justify-between transition-all duration-200">
-<div className="flex items-center gap-4">
-<span className="w-10 h-10 rounded-full bg-error flex items-center justify-center font-bold text-white">C</span>
-<span className="font-body-lg text-body-lg text-on-surface">Article 21</span>
-</div>
-<div className="flex items-center gap-2 text-error">
-<span className="font-label-caps">INCORRECT</span>
-<span className="material-symbols-outlined" data-weight="fill">cancel</span>
-</div>
-</button>
-<button className="w-full text-left p-6 rounded-xl border-2 border-surface-container hover:border-primary-container hover:bg-surface-container-low transition-all duration-200 group flex items-center justify-between">
-<div className="flex items-center gap-4">
-<span className="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center font-bold text-outline group-hover:bg-primary-container group-hover:text-white transition-colors">D</span>
-<span className="font-body-lg text-body-lg text-on-surface-variant">Article 19</span>
-</div>
-<span className="material-symbols-outlined text-outline group-hover:text-primary-container opacity-0 group-hover:opacity-100 transition-opacity">radio_button_unchecked</span>
-</button>
-</div>
-{/*  Feedback Area (Only shows after answering)  */}
-<div className="bg-surface-container-low rounded-xl p-6 mb-10 border-l-4 border-green-500">
-<h4 className="font-h3 text-primary text-lg mb-2">Great Job!</h4>
-<p className="text-on-surface-variant">Dr. B.R. Ambedkar called Article 32 the "Heart and Soul" of the Constitution because it allows citizens to move the Supreme Court for the enforcement of fundamental rights.</p>
-</div>
-{/*  Action Buttons  */}
-<div className="flex flex-col sm:flex-row gap-4 justify-end">
-<button className="px-8 py-4 rounded-xl border-2 border-primary text-primary font-button hover:bg-primary-container/5 transition-all active:scale-95">
-                                Explain Further
-                            </button>
-<button className="px-10 py-4 bg-secondary text-white rounded-xl font-button saffron-button-shadow transition-all flex items-center justify-center gap-2">
-<span>Next Question</span>
-<span className="material-symbols-outlined">arrow_forward</span>
-</button>
-</div>
-</div>
-</div>
-</section>
-</div>
-{/*  End of Quiz Splash (Hidden by default, shown at the end)  */}
-<div className="mt-20 w-full max-w-4xl bg-primary-container text-white rounded-3xl p-12 text-center relative overflow-hidden">
-<div className="absolute top-0 right-0 p-8 opacity-20">
-<span className="material-symbols-outlined text-[120px]">emoji_events</span>
-</div>
-<div className="relative z-10 flex flex-col items-center">
-<h2 className="font-h1 text-h1 mb-4">Mastery Achieved!</h2>
-<p className="text-body-lg mb-8 max-w-lg">You've successfully completed the Fundamental Rights quiz with an 80% accuracy. Your understanding of democratic basics is growing stronger!</p>
-<div className="flex gap-6 mb-12">
-<div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 min-w-[140px]">
-<p className="font-label-caps opacity-80 mb-1">SCORE</p>
-<p className="font-h2 text-h2">8/10</p>
-</div>
-<div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 min-w-[140px]">
-<p className="font-label-caps opacity-80 mb-1">LEVEL</p>
-<p className="font-h2 text-h2">Civic Pro</p>
-</div>
-</div>
-<div className="flex flex-col sm:flex-row gap-4">
-<button className="bg-white text-primary px-10 py-4 rounded-xl font-button shadow-xl hover:bg-surface-container-lowest transition-all active:scale-95">
-                        Continue Learning
-                    </button>
-<button className="bg-transparent border-2 border-white/40 text-white px-10 py-4 rounded-xl font-button hover:bg-white/10 transition-all active:scale-95">
-                        Share Achievement
-                    </button>
-</div>
-</div>
-</div>
+      {/* Level Selection */}
+      {quizState === 'selection' && (
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center mb-12">
+            <span className="text-secondary font-label-caps tracking-widest">TEST YOUR KNOWLEDGE</span>
+            <h1 className="font-h1 text-4xl md:text-5xl text-primary mt-4">Choose Your Level</h1>
+            <p className="text-on-surface-variant mt-4 max-w-2xl mx-auto text-lg">
+              Select a difficulty level and test your understanding of India's electoral system.
+            </p>
+          </div>
 
+          <div className="grid md:grid-cols-3 gap-6">
+            {levels.map((level) => (
+              <button
+                key={level.id}
+                onClick={() => startQuiz(level.id)}
+                className="bg-white p-8 rounded-2xl shadow-lg border-2 border-transparent hover:border-primary hover:shadow-xl transition-all text-left group"
+              >
+                <div className={`w-16 h-16 bg-gradient-to-br ${level.badgeColor} rounded-2xl flex items-center justify-center text-white mb-6 group-hover:scale-110 transition-transform`}>
+                  <span className="material-symbols-outlined text-3xl">{level.icon}</span>
+                </div>
+                <h3 className="font-h2 text-2xl text-primary mb-2">{level.name}</h3>
+                <p className="text-on-surface-variant mb-4">{level.description}</p>
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-slate-500">Questions:</span>
+                    <span className="font-medium">{level.questions}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-slate-500">Pass Score:</span>
+                    <span className="font-medium">{level.passScore}%</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-slate-500">Certificate:</span>
+                    <span className="font-medium text-secondary">{level.badge}</span>
+                  </div>
+                </div>
+                <div className="mt-6 flex items-center justify-center gap-2 text-primary font-button group-hover:gap-3 transition-all">
+                  Start Quiz <span className="material-symbols-outlined text-sm">arrow_forward</span>
+                </div>
+              </button>
+            ))}
+          </div>
+
+          <div className="mt-12 text-center">
+            <p className="text-on-surface-variant">
+              Complete all levels to earn the <span className="font-bold text-primary">Democracy Expert</span> platinum badge!
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* Quiz */}
+      {quizState === 'quiz' && selectedLevel && (
+        <div className="max-w-3xl mx-auto">
+          {/* Progress */}
+          <div className="mb-8">
+            <div className="flex justify-between items-center mb-2">
+              <span className="text-on-surface-variant text-sm">
+                Question {currentQuestion + 1} of {questionBank[selectedLevel].length}
+              </span>
+              <span className="font-h3 text-primary">
+                {Math.round(((currentQuestion + 1) / questionBank[selectedLevel].length) * 100)}%
+              </span>
+            </div>
+            <div className="h-3 w-full bg-slate-100 rounded-full overflow-hidden">
+              <div
+                className="h-full bg-gradient-to-r from-secondary to-primary transition-all duration-500"
+                style={{ width: `${((currentQuestion + 1) / questionBank[selectedLevel].length) * 100}%` }}
+              ></div>
+            </div>
+          </div>
+
+          {/* Question Card */}
+          <div className="bg-white rounded-3xl shadow-lg border border-slate-100 p-8 md:p-12">
+            <div className="flex items-center gap-4 mb-6">
+              <div className={`px-4 py-2 rounded-full text-sm font-medium bg-gradient-to-r ${getCurrentLevel()?.badgeColor} text-white`}>
+                {getCurrentLevel()?.name}
+              </div>
+              <div className="flex items-center gap-2 text-green-600">
+                <span className="material-symbols-outlined text-sm">check_circle</span>
+                <span className="text-sm">{score} correct</span>
+              </div>
+            </div>
+
+            <h2 className="font-h2 text-2xl text-primary mb-8">
+              {questionBank[selectedLevel][currentQuestion].question}
+            </h2>
+
+            <div className="space-y-3">
+              {questionBank[selectedLevel][currentQuestion].options.map((option, index) => {
+                const isCorrect = index === questionBank[selectedLevel][currentQuestion].answer;
+                const isSelected = index === selectedAnswer;
+
+                let buttonClass = 'border-2 border-slate-200 hover:border-primary hover:bg-primary/5';
+                if (showExplanation) {
+                  if (isCorrect) {
+                    buttonClass = 'border-2 border-green-500 bg-green-50';
+                  } else if (isSelected && !isCorrect) {
+                    buttonClass = 'border-2 border-red-500 bg-red-50';
+                  } else {
+                    buttonClass = 'border-2 border-slate-200 opacity-50';
+                  }
+                }
+
+                return (
+                  <button
+                    key={index}
+                    onClick={() => handleAnswer(index)}
+                    disabled={selectedAnswer !== null}
+                    className={`w-full text-left p-5 rounded-xl transition-all flex items-center justify-between ${buttonClass}`}
+                  >
+                    <div className="flex items-center gap-4">
+                      <span className={`w-10 h-10 rounded-full flex items-center justify-center font-bold ${
+                        showExplanation && isCorrect ? 'bg-green-500 text-white' :
+                        showExplanation && isSelected && !isCorrect ? 'bg-red-500 text-white' :
+                        'bg-slate-100 text-slate-600'
+                      }`}>
+                        {String.fromCharCode(65 + index)}
+                      </span>
+                      <span className="text-on-surface">{option}</span>
+                    </div>
+                    {showExplanation && isCorrect && (
+                      <span className="material-symbols-outlined text-green-500">check_circle</span>
+                    )}
+                    {showExplanation && isSelected && !isCorrect && (
+                      <span className="material-symbols-outlined text-red-500">cancel</span>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Explanation */}
+            {showExplanation && (
+              <div className={`mt-6 p-6 rounded-xl ${selectedAnswer === questionBank[selectedLevel][currentQuestion].answer ? 'bg-green-50 border border-green-200' : 'bg-orange-50 border border-orange-200'}`}>
+                <div className="flex items-start gap-3">
+                  <span className={`material-symbols-outlined ${selectedAnswer === questionBank[selectedLevel][currentQuestion].answer ? 'text-green-600' : 'text-orange-600'}`}>
+                    {selectedAnswer === questionBank[selectedLevel][currentQuestion].answer ? 'lightbulb' : 'info'}
+                  </span>
+                  <div>
+                    <h4 className={`font-bold mb-1 ${selectedAnswer === questionBank[selectedLevel][currentQuestion].answer ? 'text-green-700' : 'text-orange-700'}`}>
+                      {selectedAnswer === questionBank[selectedLevel][currentQuestion].answer ? 'Correct!' : 'Explanation'}
+                    </h4>
+                    <p className="text-on-surface-variant text-sm">
+                      {questionBank[selectedLevel][currentQuestion].explanation}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Next Button */}
+            {showExplanation && (
+              <div className="mt-8 flex justify-end">
+                <button
+                  onClick={nextQuestion}
+                  className="flex items-center gap-2 bg-primary text-white px-8 py-4 rounded-xl font-button hover:bg-primary-container transition-colors"
+                >
+                  {currentQuestion < questionBank[selectedLevel].length - 1 ? 'Next Question' : 'See Results'}
+                  <span className="material-symbols-outlined">arrow_forward</span>
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* Quit Button */}
+          <div className="mt-6 text-center">
+            <button
+              onClick={resetQuiz}
+              className="text-slate-500 hover:text-primary transition-colors text-sm"
+            >
+              Quit Quiz
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Results */}
+      {quizState === 'result' && selectedLevel && (
+        <div className="max-w-2xl mx-auto text-center">
+          {/* Result Card */}
+          <div className={`rounded-3xl p-12 mb-8 ${isPassed() ? 'bg-gradient-to-br from-primary to-primary-container text-white' : 'bg-slate-100 text-on-surface'}`}>
+            <div className={`w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6 ${isPassed() ? 'bg-white/20' : 'bg-slate-200'}`}>
+              <span className={`material-symbols-outlined text-5xl ${isPassed() ? 'text-white' : 'text-slate-500'}`}>
+                {getResultMessage().icon}
+              </span>
+            </div>
+
+            <h1 className="font-h1 text-4xl mb-2">{getResultMessage().title}</h1>
+            <p className={`text-lg mb-8 ${isPassed() ? 'text-white/80' : 'text-on-surface-variant'}`}>
+              {getResultMessage().message}
+            </p>
+
+            <div className="flex justify-center gap-8 mb-8">
+              <div className={`p-6 rounded-2xl ${isPassed() ? 'bg-white/10' : 'bg-white'}`}>
+                <p className={`text-sm mb-1 ${isPassed() ? 'text-white/60' : 'text-slate-500'}`}>Score</p>
+                <p className="font-h1 text-3xl">{score}/{questionBank[selectedLevel].length}</p>
+              </div>
+              <div className={`p-6 rounded-2xl ${isPassed() ? 'bg-white/10' : 'bg-white'}`}>
+                <p className={`text-sm mb-1 ${isPassed() ? 'text-white/60' : 'text-slate-500'}`}>Percentage</p>
+                <p className="font-h1 text-3xl">{getPercentage()}%</p>
+              </div>
+              <div className={`p-6 rounded-2xl ${isPassed() ? 'bg-white/10' : 'bg-white'}`}>
+                <p className={`text-sm mb-1 ${isPassed() ? 'text-white/60' : 'text-slate-500'}`}>Level</p>
+                <p className="font-h1 text-3xl">{getCurrentLevel()?.name}</p>
+              </div>
+            </div>
+
+            {isPassed() && (
+              <div className={`inline-flex items-center gap-3 px-6 py-3 rounded-full bg-gradient-to-r ${getCurrentLevel()?.badgeColor}`}>
+                <span className="material-symbols-outlined">workspace_premium</span>
+                <span className="font-bold">{getCurrentLevel()?.badge} Certificate Earned!</span>
+              </div>
+            )}
+          </div>
+
+          {/* Certificate Preview (if passed) */}
+          {isPassed() && (
+            <div className="bg-white rounded-2xl p-8 shadow-lg border-4 border-double border-primary/20 mb-8">
+              <div className="border-2 border-primary/10 rounded-xl p-8">
+                <div className="flex justify-center mb-4">
+                  <span className="material-symbols-outlined text-6xl text-secondary">verified</span>
+                </div>
+                <h2 className="font-h1 text-2xl text-primary mb-2">Certificate of Civic Knowledge</h2>
+                <p className="text-on-surface-variant mb-6">This certifies that</p>
+                <p className="font-h2 text-3xl text-primary mb-6">Civic Learner</p>
+                <p className="text-on-surface-variant mb-4">
+                  has successfully demonstrated knowledge of the Indian Electoral System
+                </p>
+                <div className="flex justify-center gap-8 text-sm">
+                  <div>
+                    <p className="text-slate-500">Level</p>
+                    <p className="font-bold text-primary">{getCurrentLevel()?.name}</p>
+                  </div>
+                  <div>
+                    <p className="text-slate-500">Score</p>
+                    <p className="font-bold text-primary">{getPercentage()}%</p>
+                  </div>
+                  <div>
+                    <p className="text-slate-500">Badge</p>
+                    <p className="font-bold text-secondary">{getCurrentLevel()?.badge}</p>
+                  </div>
+                </div>
+                <div className="mt-6 pt-6 border-t border-slate-100">
+                  <p className="text-xs text-slate-400">CivicLearn India | {new Date().toLocaleDateString()}</p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Actions */}
+          <div className="flex flex-wrap justify-center gap-4">
+            {isPassed() ? (
+              <>
+                <button className="flex items-center gap-2 bg-primary text-white px-8 py-4 rounded-xl font-button hover:bg-primary-container transition-colors">
+                  <span className="material-symbols-outlined">download</span>
+                  Download Certificate
+                </button>
+                <button className="flex items-center gap-2 bg-secondary text-white px-8 py-4 rounded-xl font-button hover:bg-orange-600 transition-colors">
+                  <span className="material-symbols-outlined">share</span>
+                  Share Achievement
+                </button>
+              </>
+            ) : (
+              <button
+                onClick={() => startQuiz(selectedLevel)}
+                className="flex items-center gap-2 bg-primary text-white px-8 py-4 rounded-xl font-button hover:bg-primary-container transition-colors"
+              >
+                <span className="material-symbols-outlined">refresh</span>
+                Try Again
+              </button>
+            )}
+            <button
+              onClick={resetQuiz}
+              className="flex items-center gap-2 bg-slate-100 text-primary px-8 py-4 rounded-xl font-button hover:bg-slate-200 transition-colors"
+            >
+              <span className="material-symbols-outlined">grid_view</span>
+              Choose Another Level
+            </button>
+          </div>
+
+          {/* Next Steps */}
+          <div className="mt-12 p-6 bg-slate-50 rounded-xl">
+            <h3 className="font-h3 text-lg text-primary mb-4">What's Next?</h3>
+            <div className="flex flex-wrap justify-center gap-4">
+              {!isPassed() && (
+                <Link to="/learn" className="flex items-center gap-2 text-primary hover:underline">
+                  <span className="material-symbols-outlined text-sm">school</span>
+                  Review Learning Materials
+                </Link>
+              )}
+              {isPassed() && selectedLevel !== 'advanced' && (
+                <button
+                  onClick={() => startQuiz(selectedLevel === 'beginner' ? 'intermediate' : 'advanced')}
+                  className="flex items-center gap-2 text-secondary hover:underline"
+                >
+                  <span className="material-symbols-outlined text-sm">trending_up</span>
+                  Try Next Level
+                </button>
+              )}
+              <a href="https://voters.eci.gov.in" target="_blank" rel="noreferrer" className="flex items-center gap-2 text-primary hover:underline">
+                <span className="material-symbols-outlined text-sm">how_to_vote</span>
+                Register to Vote
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }
