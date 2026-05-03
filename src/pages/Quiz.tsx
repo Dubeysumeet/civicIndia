@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 
 type Level = 'beginner' | 'intermediate' | 'advanced';
-type QuizState = 'selection' | 'quiz' | 'result';
+type QuizState = 'selection' | 'quiz' | 'result' | 'name-input';
 
 interface Question {
   question: string;
@@ -19,6 +19,8 @@ export default function Quiz() {
   const [showExplanation, setShowExplanation] = useState(false);
   const [score, setScore] = useState(0);
   const [answers, setAnswers] = useState<(number | null)[]>([]);
+  const [userName, setUserName] = useState('');
+  const certificateRef = useRef<HTMLDivElement>(null);
 
   const levels = [
     {
@@ -94,6 +96,14 @@ export default function Quiz() {
 
   const startQuiz = (level: Level) => {
     setSelectedLevel(level);
+    if (!userName) {
+      setQuizState('name-input');
+    } else {
+      initQuiz(level);
+    }
+  };
+
+  const initQuiz = (level: Level) => {
     setQuizState('quiz');
     setCurrentQuestion(0);
     setSelectedAnswer(null);
@@ -154,7 +164,79 @@ export default function Quiz() {
     if (percentage >= 60) return { title: 'You Passed!', message: 'You made it! Consider revisiting some sections.', icon: 'check_circle' };
     return { title: 'Keep Learning!', message: "Don't give up! Review the material and try again.", icon: 'refresh' };
   };
+  const downloadCertificate = () => {
+    if (!certificateRef.current) return;
+    
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
 
+    // Set dimensions for a high-quality certificate
+    canvas.width = 1200;
+    canvas.height = 800;
+
+    // Draw Background
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Draw Border
+    ctx.strokeStyle = '#0B1F4A';
+    ctx.lineWidth = 20;
+    ctx.strokeRect(40, 40, canvas.width - 80, canvas.height - 80);
+    
+    ctx.strokeStyle = '#D4880A';
+    ctx.lineWidth = 5;
+    ctx.strokeRect(60, 60, canvas.width - 120, canvas.height - 120);
+
+    // Text Content
+    ctx.textAlign = 'center';
+    
+    // Header
+    ctx.fillStyle = '#0B1F4A';
+    ctx.font = 'bold 60px Inter, sans-serif';
+    ctx.fillText('CERTIFICATE OF CIVIC KNOWLEDGE', canvas.width / 2, 200);
+
+    // Subtitle
+    ctx.fillStyle = '#64748b';
+    ctx.font = '30px Inter, sans-serif';
+    ctx.fillText('This is to certify that', canvas.width / 2, 280);
+
+    // Name
+    ctx.fillStyle = '#C84B00';
+    ctx.font = 'bold 80px Lexend, sans-serif';
+    ctx.fillText(userName || 'Civic Learner', canvas.width / 2, 400);
+
+    // Achievement
+    ctx.fillStyle = '#1e293b';
+    ctx.font = '35px Inter, sans-serif';
+    ctx.fillText('has successfully completed the', canvas.width / 2, 480);
+    ctx.fillText(`${getCurrentLevel()?.name} Level Quiz on Indian Elections`, canvas.width / 2, 530);
+
+    // Stats
+    ctx.fillStyle = '#0B1F4A';
+    ctx.font = 'bold 40px Inter, sans-serif';
+    ctx.fillText(`Score: ${getPercentage()}%`, canvas.width / 2, 630);
+
+    // Date & Footer
+    ctx.fillStyle = '#94a3b8';
+    ctx.font = '20px sans-serif';
+    ctx.fillText(`Awarded on ${new Date().toLocaleDateString()}`, canvas.width / 2, 720);
+    ctx.fillText('CivicLearn India - Empowerment through Knowledge', canvas.width / 2, 750);
+
+    // Trigger Download
+    try {
+      const dataUrl = canvas.toDataURL('image/png');
+      const link = document.createElement('a');
+      link.download = `CivicLearn_Certificate_${userName.replace(/\s+/g, '_') || 'Learner'}.png`;
+      link.href = dataUrl;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (err) {
+      console.error("Download failed:", err);
+      alert("Failed to generate download. Please try again or take a screenshot.");
+    }
+  };
   return (
     <>
       {/* Level Selection */}
@@ -208,7 +290,38 @@ export default function Quiz() {
           </div>
         </div>
       )}
-
+      {/* Name Input */}
+      {quizState === 'name-input' && (
+        <div className="max-w-xl mx-auto text-center py-12">
+          <div className="card p-10 noise-overlay sheen">
+            <div className="w-20 h-20 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-6 text-primary">
+              <span className="material-symbols-outlined text-4xl">person_edit</span>
+            </div>
+            <h2 className="font-h1 text-3xl text-primary mb-4">What's Your Name?</h2>
+            <p className="text-on-surface-variant mb-8">
+              We'll use this to personalize your learning journey and your certificates.
+            </p>
+            <div className="relative mb-8">
+              <input
+                type="text"
+                value={userName}
+                onChange={(e) => setUserName(e.target.value)}
+                placeholder="Enter your full name"
+                className="w-full bg-slate-50 border-2 border-slate-100 rounded-xl px-6 py-4 text-lg focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all text-center outline-none"
+                autoFocus
+                onKeyPress={(e) => e.key === 'Enter' && userName && initQuiz(selectedLevel!)}
+              />
+            </div>
+            <button
+              onClick={() => userName && initQuiz(selectedLevel!)}
+              disabled={!userName}
+              className="w-full bg-primary text-white py-4 rounded-xl font-button text-lg shadow-lg shadow-primary/20 hover:bg-primary-container transition-all disabled:opacity-50 disabled:grayscale"
+            >
+              Start Your Journey
+            </button>
+          </div>
+        </div>
+      )}
       {/* Quiz */}
       {quizState === 'quiz' && selectedLevel && (
         <div className="max-w-3xl mx-auto">
@@ -376,14 +489,14 @@ export default function Quiz() {
 
           {/* Certificate Preview (if passed) */}
           {isPassed() && (
-            <div className="card p-8 mb-8 border-4 border-double border-primary/20 bg-dot-pattern">
+            <div ref={certificateRef} className="card p-8 mb-8 border-4 border-double border-primary/20 bg-dot-pattern">
               <div className="border-2 border-primary/10 rounded-xl p-8">
                 <div className="flex justify-center mb-4">
                   <span className="material-symbols-outlined text-6xl text-secondary">verified</span>
                 </div>
                 <h2 className="font-h1 text-2xl text-primary mb-2">Certificate of Civic Knowledge</h2>
                 <p className="text-on-surface-variant mb-6">This certifies that</p>
-                <p className="font-h2 text-3xl text-primary mb-6">Civic Learner</p>
+                <p className="font-h2 text-3xl text-primary mb-6">{userName || 'Civic Learner'}</p>
                 <p className="text-on-surface-variant mb-4">
                   has successfully demonstrated knowledge of the Indian Electoral System
                 </p>
@@ -412,7 +525,10 @@ export default function Quiz() {
           <div className="flex flex-wrap justify-center gap-4">
             {isPassed() ? (
               <>
-                <button className="flex items-center gap-2 bg-primary text-white px-8 py-4 rounded-xl font-button hover:bg-primary-container transition-colors">
+                <button 
+                  onClick={downloadCertificate}
+                  className="flex items-center gap-2 bg-primary text-white px-8 py-4 rounded-xl font-button hover:bg-primary-container transition-colors"
+                >
                   <span className="material-symbols-outlined">download</span>
                   Download Certificate
                 </button>
