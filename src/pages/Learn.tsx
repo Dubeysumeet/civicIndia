@@ -379,7 +379,7 @@ export default function Learn() {
                       </div>
                       <div className="flex-1">
                         <h4 className="font-bold text-primary text-sm">{item.term}</h4>
-                        <p className="text-on-surface-variant text-xs">{item.definition}</p>
+                        <p className="text-on-surface-variant text-xs">{item.meaning}</p>
                       </div>
                       <span className="material-symbols-outlined text-slate-300 text-sm group-hover:text-primary transition-colors">smart_toy</span>
                     </motion.div>

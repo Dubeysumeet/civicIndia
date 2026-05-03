@@ -100,11 +100,11 @@ export default function Quiz() {
     if (!userName) {
       setQuizState('name-input');
     } else {
-      initQuiz(level);
+      initQuiz();
     }
   };
 
-  const initQuiz = (level: Level) => {
+  const initQuiz = () => {
     setQuizState('quiz');
     setCurrentQuestion(0);
     setSelectedAnswer(null);
@@ -303,11 +303,11 @@ export default function Quiz() {
                 placeholder="Enter your full name"
                 className="w-full bg-slate-50 border-2 border-slate-100 rounded-xl px-6 py-4 text-lg focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all text-center outline-none"
                 autoFocus
-                onKeyPress={(e) => e.key === 'Enter' && userName && initQuiz(selectedLevel!)}
+                onKeyPress={(e) => e.key === 'Enter' && userName && initQuiz()}
               />
             </div>
             <button
-              onClick={() => userName && initQuiz(selectedLevel!)}
+              onClick={() => userName && initQuiz()}
               disabled={!userName}
               className="w-full bg-primary text-white py-4 rounded-xl font-button text-lg shadow-lg shadow-primary/20 hover:bg-primary-container transition-all disabled:opacity-50 disabled:grayscale"
             >

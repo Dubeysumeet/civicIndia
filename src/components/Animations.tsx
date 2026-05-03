@@ -1,5 +1,5 @@
 import { motion, useInView, useSpring, useTransform, useScroll, MotionValue } from 'framer-motion';
-import { useRef, useEffect, useState, ReactNode, useCallback } from 'react';
+import { useRef, useEffect, useState, type ReactNode } from 'react';
 
 // ─── Fade in from bottom on scroll ────────────────────────────────────────────
 export function FadeInUp({ children, delay = 0, className = '' }: { children: ReactNode; delay?: number; className?: string }) {
@@ -404,7 +404,7 @@ export function FlipCard({ front, back, className = '' }: { front: ReactNode; ba
         </div>
         {/* Back */}
         <div
-          style={{ backfaceVisibility: 'hidden', rotateY: '180deg', position: 'absolute', inset: 0 }}
+          style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)', position: 'absolute', inset: 0 }}
           className="w-full h-full"
         >
           {back}

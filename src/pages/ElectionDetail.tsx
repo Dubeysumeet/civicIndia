@@ -1,6 +1,6 @@
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { FadeInUp, FadeInLeft, FadeInRight, ScaleIn, StaggerContainer, StaggerItem, AnimatedCounter, FloatingElement, ParticleBackground } from '../components/Animations';
+import { FadeInUp, FadeInLeft, FadeInRight, ScaleIn, StaggerContainer, StaggerItem, ParticleBackground } from '../components/Animations';
 
 const electionData: Record<string, {
   name: string; subtitle: string; emoji: string;

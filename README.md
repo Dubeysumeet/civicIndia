@@ -91,13 +91,81 @@ Head to the **Quiz** section. Select a category and start the challenge. Try to 
 
 ---
 
-## ☁️ Deployment
+## ☁️ Deployment to Google Cloud Run
 
-The project is configured for seamless deployment to **Google Cloud Run** using the included `Dockerfile` and `nginx.conf`.
+The project is fully configured for deployment to **Google Cloud Run** with Docker containerization.
 
-```bash
-# Build and push to Google Container Registry
-gcloud builds submit --tag gcr.io/civicindia-495216/civiclearn --build-arg VITE_GEMINI_API_KEY=your_key
+### Prerequisites
+- Google Cloud Platform account
+- [Google Cloud SDK](https://cloud.google.com/sdk/docs/install) installed
+- A Google Gemini API Key
+
+### Quick Deployment
+
+1. **Set up your Google Cloud project**:
+   ```bash
+   # Replace with your project ID
+   export PROJECT_ID="your-gcp-project-id"
+   export REGION="us-central1"  # or your preferred region
+   ```
+
+2. **Set your Gemini API key**:
+   ```bash
+   export VITE_GEMINI_API_KEY="your_gemini_api_key_here"
+   ```
+
+3. **Run the deployment script**:
+   ```bash
+   # For Linux/Mac
+   chmod +x deploy.sh
+   ./deploy.sh
+
+   # For Windows PowerShell
+   .\deploy.ps1 -ProjectId "your-gcp-project-id" -GeminiApiKey "your-key"
+   ```
+
+### Manual Deployment
+
+If you prefer to deploy manually:
+
+1. **Enable required APIs**:
+   ```bash
+   gcloud services enable cloudbuild.googleapis.com
+   gcloud services enable run.googleapis.com
+   gcloud services enable containerregistry.googleapis.com
+   ```
+
+2. **Build and deploy**:
+   ```bash
+   gcloud builds submit \
+     --config cloudbuild.yaml \
+     --substitutions _VITE_GEMINI_API_KEY="${VITE_GEMINI_API_KEY}",_REGION="${REGION}" \
+     .
+   ```
+
+### Configuration Files
+
+- **`Dockerfile`**: Multi-stage build with Node.js for building and Nginx for serving
+- **`nginx.conf`**: Nginx configuration optimized for React SPA routing
+- **`cloudbuild.yaml`**: Google Cloud Build configuration for automated deployment
+- **`deploy.sh`**: Automated deployment script (Linux/Mac)
+- **`deploy.ps1`**: Automated deployment script (Windows)
+- **`.env.example`**: Example environment variables file
+
+### Environment Variables
+
+The following environment variables are required:
+
+- `VITE_GEMINI_API_KEY`: Your Google Gemini API key (passed as build arg)
+
+### Post-Deployment
+
+After successful deployment, you'll receive a URL like:
+```
+https://civiclearn-[hash]-[region].run.app
+```
+
+The application will be accessible worldwide with automatic scaling and SSL certificates.
 
 # Deploy to Cloud Run
 gcloud run deploy civiclearn --image gcr.io/civicindia-495216/civiclearn --platform managed
