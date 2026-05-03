@@ -161,7 +161,7 @@ export default function Quiz() {
       {quizState === 'selection' && (
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
-            <span className="text-secondary font-label-caps tracking-widest">TEST YOUR KNOWLEDGE</span>
+            <span className="section-label text-secondary">TEST YOUR KNOWLEDGE</span>
             <h1 className="font-h1 text-4xl md:text-5xl text-primary mt-4">Choose Your Level</h1>
             <p className="text-on-surface-variant mt-4 max-w-2xl mx-auto text-lg">
               Select a difficulty level and test your understanding of India's electoral system.
@@ -173,9 +173,9 @@ export default function Quiz() {
               <button
                 key={level.id}
                 onClick={() => startQuiz(level.id)}
-                className="bg-white p-8 rounded-2xl shadow-lg border-2 border-transparent hover:border-primary hover:shadow-xl transition-all text-left group"
+                className="card p-8 text-left group"
               >
-                <div className={`w-16 h-16 bg-gradient-to-br ${level.badgeColor} rounded-2xl flex items-center justify-center text-white mb-6 group-hover:scale-110 transition-transform`}>
+                <div className={`w-16 h-16 bg-gradient-to-br ${level.badgeColor} rounded-2xl flex items-center justify-center text-white mb-6 group-hover:scale-110 transition-transform noise-overlay sheen`}>
                   <span className="material-symbols-outlined text-3xl">{level.icon}</span>
                 </div>
                 <h3 className="font-h2 text-2xl text-primary mb-2">{level.name}</h3>
@@ -222,16 +222,16 @@ export default function Quiz() {
                 {Math.round(((currentQuestion + 1) / questionBank[selectedLevel].length) * 100)}%
               </span>
             </div>
-            <div className="h-3 w-full bg-slate-100 rounded-full overflow-hidden">
+            <div className="h-3 w-full bg-slate-100 rounded-full overflow-hidden timeline-line opacity-20">
               <div
-                className="h-full bg-gradient-to-r from-secondary to-primary transition-all duration-500"
+                className="h-full bg-gradient-to-r from-[#C84B00] to-primary transition-all duration-500"
                 style={{ width: `${((currentQuestion + 1) / questionBank[selectedLevel].length) * 100}%` }}
               ></div>
             </div>
           </div>
 
           {/* Question Card */}
-          <div className="bg-white rounded-3xl shadow-lg border border-slate-100 p-8 md:p-12">
+          <div className="card p-8 md:p-12 noise-overlay">
             <div className="flex items-center gap-4 mb-6">
               <div className={`px-4 py-2 rounded-full text-sm font-medium bg-gradient-to-r ${getCurrentLevel()?.badgeColor} text-white`}>
                 {getCurrentLevel()?.name}
@@ -339,7 +339,7 @@ export default function Quiz() {
       {quizState === 'result' && selectedLevel && (
         <div className="max-w-2xl mx-auto text-center">
           {/* Result Card */}
-          <div className={`rounded-3xl p-12 mb-8 ${isPassed() ? 'bg-gradient-to-br from-primary to-primary-container text-white' : 'bg-slate-100 text-on-surface'}`}>
+          <div className={`rounded-3xl p-12 mb-8 noise-overlay sheen ${isPassed() ? 'bg-gradient-to-br from-[#060F2A] via-primary to-primary-container text-white shadow-xl' : 'card bg-slate-100 text-on-surface'}`}>
             <div className={`w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6 ${isPassed() ? 'bg-white/20' : 'bg-slate-200'}`}>
               <span className={`material-symbols-outlined text-5xl ${isPassed() ? 'text-white' : 'text-slate-500'}`}>
                 {getResultMessage().icon}
@@ -376,7 +376,7 @@ export default function Quiz() {
 
           {/* Certificate Preview (if passed) */}
           {isPassed() && (
-            <div className="bg-white rounded-2xl p-8 shadow-lg border-4 border-double border-primary/20 mb-8">
+            <div className="card p-8 mb-8 border-4 border-double border-primary/20 bg-dot-pattern">
               <div className="border-2 border-primary/10 rounded-xl p-8">
                 <div className="flex justify-center mb-4">
                   <span className="material-symbols-outlined text-6xl text-secondary">verified</span>
